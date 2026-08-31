@@ -66,3 +66,36 @@ export function hann(n: number): Float64Array {
 }
 
 export function mean(x: ArrayLike<number>, from = 0, to = x.length): number {
+  let s = 0;
+  for (let i = from; i < to; i++) s += x[i];
+  return to > from ? s / (to - from) : 0;
+}
+
+export function std(x: ArrayLike<number>, from = 0, to = x.length): number {
+  const m = mean(x, from, to);
+  let s = 0;
+  for (let i = from; i < to; i++) { const d = x[i] - m; s += d * d; }
+  return to > from ? Math.sqrt(s / (to - from)) : 0;
+}
+
+/**
+ * Resample an irregularly-sampled signal onto a uniform grid by linear interpolation.
+ * `t` must be non-decreasing. Returns samples at t0, t0+1/fs, ... up to the last t.
+ */
+export function resampleUniform(t: ArrayLike<number>, v: ArrayLike<number>, fs: number): { t0: number; y: Float64Array } {
+  const n = t.length;
+  if (n < 2) return { t0: n ? t[0] : 0, y: new Float64Array(n ? [v[0]] : []) };
+  const t0 = t[0];
+  const span = t[n - 1] - t0;
+  const m = Math.floor(span * fs + 1e-9) + 1;
+  const y = new Float64Array(m);
+  let j = 0;
+  for (let i = 0; i < m; i++) {
+    const ti = t0 + i / fs;
+    while (j < n - 2 && t[j + 1] < ti) j++;
+    const ta = t[j], tb = t[j + 1];
+    const f = tb > ta ? Math.min(1, Math.max(0, (ti - ta) / (tb - ta))) : 0;
+    y[i] = v[j] + (v[j + 1] - v[j]) * f;
+  }
+  return { t0, y };
+}
