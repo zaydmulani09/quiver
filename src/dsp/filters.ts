@@ -32,3 +32,37 @@ export function biquadFilter(x: ArrayLike<number>, c: Biquad): Float64Array {
     const y0 = c.b0 * x0 + c.b1 * x1 + c.b2 * x2 - c.a1 * y1 - c.a2 * y2;
     x2 = x1; x1 = x0; y2 = y1; y1 = y0;
     y[i] = y0;
+  }
+  return y;
+}
+
+/** Zero-phase filtering (forward + reverse). Doubles the filter order, removes phase lag. */
+export function filtfilt(x: ArrayLike<number>, c: Biquad): Float64Array {
+  const fwd = biquadFilter(x, c);
+  fwd.reverse();
+  const back = biquadFilter(fwd, c);
+  back.reverse();
+  return back;
+}
+
+/** Remove the least-squares linear trend. */
+export function detrend(x: ArrayLike<number>): Float64Array {
+  const n = x.length;
+  const out = new Float64Array(n);
+  if (n < 2) return out;
+  let sx = 0, sy = 0, sxx = 0, sxy = 0;
+  for (let i = 0; i < n; i++) { sx += i; sy += x[i]; sxx += i * i; sxy += i * x[i]; }
+  const denom = n * sxx - sx * sx;
+  const slope = denom === 0 ? 0 : (n * sxy - sx * sy) / denom;
+  const intercept = (sy - slope * sx) / n;
+  for (let i = 0; i < n; i++) out[i] = x[i] - (slope * i + intercept);
+  return out;
+}
+
+export function hann(n: number): Float64Array {
+  const w = new Float64Array(n);
+  for (let i = 0; i < n; i++) w[i] = 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / (n - 1));
+  return w;
+}
+
+export function mean(x: ArrayLike<number>, from = 0, to = x.length): number {
