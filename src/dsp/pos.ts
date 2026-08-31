@@ -32,3 +32,8 @@ export function pos(r: ArrayLike<number>, g: ArrayLike<number>, b: ArrayLike<num
     const alpha = sd2 > 1e-9 ? std(s1) / sd2 : 0;
     let hm = 0;
     for (let k = 0; k < winLen; k++) hm += s1[k] + alpha * s2[k];
+    hm /= winLen;
+    for (let k = 0; k < winLen; k++) h[start + k] += s1[k] + alpha * s2[k] - hm;
+  }
+  return h;
+}
