@@ -99,3 +99,30 @@ export function resampleUniform(t: ArrayLike<number>, v: ArrayLike<number>, fs: 
   }
   return { t0, y };
 }
+
+/**
+ * Locate the dominant spectral peak within [fLo, fHi]. Returns the interpolated frequency,
+ * plus a signal-to-noise ratio: main-lobe power over the rest of the in-band power.
+ * `peakHalfWidth` is the lobe half-width in bins (Hann window of N samples padded to nfft: ~2 * nfft / N).
+ */
+export function dominantFrequency(power: ArrayLike<number>, fs: number, nfft: number, fLo: number, fHi: number, peakHalfWidth = 1): { freq: number; snr: number; peakPower: number } {
+  const binHz = fs / nfft;
+  const iLo = Math.max(1, Math.ceil(fLo / binHz));
+  const iHi = Math.min(power.length - 2, Math.floor(fHi / binHz));
+  if (iHi <= iLo) return { freq: 0, snr: 0, peakPower: 0 };
+  let best = iLo, bestP = -1, total = 0;
+  for (let i = iLo; i <= iHi; i++) {
+    total += power[i];
+    if (power[i] > bestP) { bestP = power[i]; best = i; }
+  }
+  // Parabolic interpolation for sub-bin precision.
+  const a = Math.log(power[best - 1] + 1e-12), b = Math.log(power[best] + 1e-12), c = Math.log(power[best + 1] + 1e-12);
+  const denom = a - 2 * b + c;
+  const delta = denom !== 0 ? (0.5 * (a - c)) / denom : 0;
+  const freq = (best + Math.max(-0.5, Math.min(0.5, delta))) * binHz;
+  let peakBand = 0;
+  for (let i = Math.max(iLo, best - peakHalfWidth); i <= Math.min(iHi, best + peakHalfWidth); i++) peakBand += power[i];
+  const rest = Math.max(total - peakBand, 1e-12);
+  const snr = peakBand / rest;
+  return { freq, snr, peakPower: bestP };
+}
