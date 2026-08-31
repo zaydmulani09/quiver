@@ -32,3 +32,25 @@ export function fft(re: Float64Array, im: Float64Array): void {
         const tIm = re[b] * curIm + im[b] * curRe;
         re[b] = re[a] - tRe;
         im[b] = im[a] - tIm;
+        re[a] += tRe;
+        im[a] += tIm;
+        const nRe = curRe * wRe - curIm * wIm;
+        curIm = curRe * wIm + curIm * wRe;
+        curRe = nRe;
+      }
+    }
+  }
+}
+
+/** Power spectrum (|X|^2) of a real signal, zero-padded to `nfft`. Returns bins 0..nfft/2. */
+export function powerSpectrum(signal: ArrayLike<number>, nfft: number): Float64Array {
+  const re = new Float64Array(nfft);
+  const im = new Float64Array(nfft);
+  const n = Math.min(signal.length, nfft);
+  for (let i = 0; i < n; i++) re[i] = signal[i];
+  fft(re, im);
+  const half = nfft >> 1;
+  const out = new Float64Array(half + 1);
+  for (let i = 0; i <= half; i++) out[i] = re[i] * re[i] + im[i] * im[i];
+  return out;
+}
