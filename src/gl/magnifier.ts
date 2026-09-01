@@ -168,3 +168,37 @@ export class Magnifier {
         gl.uniform1f(u.get('u_hasCoarse')!, prevCoarse ? 1 : 0);
         this.bindTex('u_coarse', prevCoarse ? prevCoarse.tex : this.g[0].tex, 0);
         this.bindTex('u_lo1', cur ? cur.a : this.g[0].tex, 1);
+        this.bindTex('u_lo2', cur ? cur.b : this.g[0].tex, 2);
+        const g = cur ? gain : 0;
+        gl.uniform3f(u.get('u_gain')!, g, g * this.params.chromaAtt, g * this.params.chromaAtt);
+      });
+      coarse = target;
+    }
+  }
+
+  /** Draw the composite to the canvas. Safe to call every animation frame. */
+  render(): void {
+    const gl = this.gl;
+    if (!this.diff) { gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT); return; }
+    const cw = this.canvas.width, ch = this.canvas.height;
+    const va = this.videoW / this.videoH, ca = cw / ch;
+    let sx = 1, sy = 1;
+    if (ca > va) sx = va / ca; else sy = ca / va;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, cw, ch);
+    gl.bindVertexArray(this.vao);
+    const prog = this.use('display');
+    this.bindTex('u_video', this.videoTex, 0);
+    this.bindTex('u_diff', this.diff.tex, 1);
+    gl.uniform1i(prog.get('u_view')!, { magnified: 0, compare: 1, signal: 2, original: 3 }[this.view]);
+    gl.uniform1f(prog.get('u_split')!, this.split);
+    gl.uniform1f(prog.get('u_flip')!, this.mirror ? 1 : 0);
+    gl.uniform2f(prog.get('u_scale')!, sx, sy);
+    gl.uniform2f(prog.get('u_offset')!, (1 - sx) / 2, (1 - sy) / 2);
+    gl.uniform1f(prog.get('u_signalGain')!, this.signalGain);
+    gl.uniform2f(prog.get('u_canvas')!, cw, ch);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+
+  /** The pyramid level used in colour mode. */
+  colorLevel(): number {
