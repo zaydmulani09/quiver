@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { fft, powerSpectrum } from '../src/dsp/fft';
 import { bandpassBiquad, detrend, dominantFrequency, filtfilt, resampleUniform } from '../src/dsp/filters';
+import { pos } from '../src/dsp/pos';
+import { HeartRateEstimator } from '../src/dsp/heartrate';
 
 describe('fft', () => {
   it('matches a naive DFT', () => {
