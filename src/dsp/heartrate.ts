@@ -65,3 +65,38 @@ export class HeartRateEstimator {
     this.smoothed = null; this.candidate = null; this.candidateSince = 0;
     this.lastBeatTime = -Infinity; this.conf = 0;
   }
+
+  get seconds(): number {
+    return this.t.length > 1 ? this.t[this.t.length - 1] - this.t[0] : 0;
+  }
+
+  push(time: number, r: number, g: number, b: number): void {
+    if (this.t.length && time <= this.t[this.t.length - 1]) return;
+    this.t.push(time); this.r.push(r); this.g.push(g); this.b.push(b);
+    const cutoff = time - this.win - 1;
+    let drop = 0;
+    while (drop < this.t.length && this.t[drop] < cutoff) drop++;
+    if (drop > 0) {
+      this.t.splice(0, drop); this.r.splice(0, drop); this.g.splice(0, drop); this.b.splice(0, drop);
+    }
+  }
+
+  update(): HeartRateReading {
+    const seconds = this.seconds;
+    const empty: HeartRateReading = { bpm: this.smoothed, rawBpm: 0, confidence: this.conf, seconds, waveform: new Float64Array(0), beat: false };
+    if (seconds < 3 || this.t.length < this.posWin + 2) return empty;
+
+    const R = resampleUniform(this.t, this.r, this.fs);
+    const G = resampleUniform(this.t, this.g, this.fs);
+    const B = resampleUniform(this.t, this.b, this.fs);
+    const n = R.y.length;
+    if (n < this.posWin + 2) return empty;
+
+    const pulse = pos(R.y, G.y, B.y, this.posWin);
+    const bp = bandpassBiquad(this.fs, this.minHz, this.maxHz);
+    // Causal filtering keeps the newest samples clean (a zero-phase pass would smear the tail
+    // with its reverse-direction transient); the ~140 ms group delay is imperceptible.
+    const filtered = biquadFilter(detrend(pulse), bp);
+
+    // Waveform for display: last `display` seconds, normalised to unit RMS.
+    const dispN = Math.min(n, Math.round(this.display * this.fs));
