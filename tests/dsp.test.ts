@@ -81,3 +81,38 @@ function synthSkin(seconds: number, fs: number, bpm: number, noise = 0.6) {
   }
   return { t, r, g, b };
 }
+
+describe('POS + HeartRateEstimator', () => {
+  it('POS recovers the pulse frequency from noisy colour traces', () => {
+    const fs = 30, bpm = 72;
+    const s = synthSkin(12, fs, bpm);
+    const R = resampleUniform(s.t, s.r, fs).y, G = resampleUniform(s.t, s.g, fs).y, B = resampleUniform(s.t, s.b, fs).y;
+    const h = pos(R, G, B, 48);
+    const p = powerSpectrum(detrend(h), 2048);
+    const { freq } = dominantFrequency(p, fs, 2048, 0.7, 3);
+    expect(Math.abs(freq * 60 - bpm)).toBeLessThan(3);
+  });
+
+  it.each([55, 72, 98, 140])('estimator locks onto %i bpm', (bpm) => {
+    const fs = 30;
+    const est = new HeartRateEstimator({ fs });
+    const s = synthSkin(14, fs, bpm);
+    let last = est.update();
+    for (let i = 0; i < s.t.length; i++) {
+      est.push(s.t[i], s.r[i], s.g[i], s.b[i]);
+      if (i % 8 === 0) last = est.update();
+    }
+    last = est.update();
+    expect(last.bpm).not.toBeNull();
+    expect(Math.abs((last.bpm as number) - bpm)).toBeLessThan(4);
+    expect(last.confidence).toBeGreaterThan(0.4);
+    expect(last.waveform.length).toBeGreaterThan(100);
+  });
+
+  it('stays unlocked on pure noise', () => {
+    const est = new HeartRateEstimator();
+    let seed = 3;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296 - 0.5; };
+    for (let i = 0; i < 360; i++) est.push(i / 30, 150 + rnd() * 8, 110 + rnd() * 8, 90 + rnd() * 8);
+    const reading = est.update();
+    expect(reading.confidence).toBeLessThan(0.35);
