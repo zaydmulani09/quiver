@@ -183,3 +183,21 @@ void main() {
   float cx = v_uv.x;
   if (u_flip > 0.5) uv.x = 1.0 - uv.x;
   vec3 rgb = texture(u_video, vec2(uv.x, 1.0 - uv.y)).rgb;
+  vec3 diff = texture(u_diff, uv).rgb;
+  vec3 mag = clamp(yiq2rgb(rgb2yiq(rgb) + diff), 0.0, 1.0);
+
+  if (u_view == 3) { o = vec4(rgb, 1.0); return; }
+  if (u_view == 2) {
+    float lum = dot(rgb, vec3(0.299, 0.587, 0.114));
+    vec3 base = vec3(lum) * 0.22;
+    o = vec4(base + heat(diff.x * u_signalGain), 1.0);
+    return;
+  }
+  if (u_view == 1) {
+    float px = abs(cx - u_split) * u_canvas.x;
+    if (px < 1.0) { o = vec4(1.0); return; }
+    o = vec4(cx < u_split ? rgb : mag, 1.0);
+    return;
+  }
+  o = vec4(mag, 1.0);
+}`;
