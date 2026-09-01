@@ -100,3 +100,37 @@ export class Magnifier {
   /** Feed one new video frame. `dt` is the time since the previous frame in seconds. */
   process(video: HTMLVideoElement, dt: number): void {
     const gl = this.gl;
+    const vw = video.videoWidth, vh = video.videoHeight;
+    if (!vw || !vh) return;
+    if (vw !== this.videoW || vh !== this.videoH) this.allocate(vw, vh);
+
+    gl.bindTexture(gl.TEXTURE_2D, this.videoTex);
+    gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, video);
+
+    const clampedDt = Math.min(0.25, Math.max(1 / 120, dt));
+    const r1 = 1 - Math.exp(-2 * Math.PI * this.params.fHi * clampedDt);
+    const r2 = 1 - Math.exp(-2 * Math.PI * this.params.fLo * clampedDt);
+
+    gl.bindVertexArray(this.vao);
+    gl.disable(gl.BLEND);
+    gl.disable(gl.DEPTH_TEST);
+
+    // 1. YIQ at processing resolution.
+    this.draw('toYiq', this.g[0], () => this.bindTex('u_src', this.videoTex, 0));
+
+    // 2. Gaussian pyramid.
+    for (let i = 1; i < this.g.length; i++) {
+      const src = this.g[i - 1];
+      this.draw('down', this.g[i], (u) => {
+        this.bindTex('u_src', src.tex, 0);
+        gl.uniform2f(u.get('u_texel')!, 1 / src.w, 1 / src.h);
+      });
+    }
+
+    const L = this.g.length;
+    const reset = this.needsReset ? 1 : 0;
+    this.needsReset = false;
+
+    if (this.params.mode === 'color') {
+      const k = this.colorLevel();
+      this.iirStep(k, this.g[k].tex, r1, r2, reset);
