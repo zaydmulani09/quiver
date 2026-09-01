@@ -54,3 +54,14 @@ void main() {
   c += texture(u_src, v_uv + vec2( u_texel.x,  u_texel.y)).rgb;
   o = vec4(c / 8.0, 1.0);
 }`;
+
+/** Laplacian band: fine level minus bilinearly upsampled coarser level. */
+export const FRAG_LAPLACIAN = `#version 300 es
+precision highp float;
+uniform sampler2D u_fine;
+uniform sampler2D u_coarse;
+in vec2 v_uv;
+out vec4 o;
+void main() {
+  o = vec4(texture(u_fine, v_uv).rgb - texture(u_coarse, v_uv).rgb, 1.0);
+}`;
