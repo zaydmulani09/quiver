@@ -31,3 +31,33 @@ describe('fft', () => {
     expect(Math.abs(freq - f)).toBeLessThan(0.03);
   });
 });
+
+describe('filters', () => {
+  it('bandpass keeps in-band, rejects out-of-band', () => {
+    const fs = 30;
+    const c = bandpassBiquad(fs, 0.7, 3);
+    const inBand = new Float64Array(600), outBand = new Float64Array(600);
+    for (let i = 0; i < 600; i++) {
+      inBand[i] = Math.sin(2 * Math.PI * 1.3 * (i / fs));
+      outBand[i] = Math.sin(2 * Math.PI * 0.1 * (i / fs));
+    }
+    const rms = (x: Float64Array) => Math.sqrt(x.slice(200).reduce((s, v) => s + v * v, 0) / 400);
+    expect(rms(filtfilt(inBand, c))).toBeGreaterThan(0.5);
+    expect(rms(filtfilt(outBand, c))).toBeLessThan(0.05);
+  });
+
+  it('detrend removes a ramp', () => {
+    const x = Float64Array.from({ length: 100 }, (_, i) => 3 + 0.5 * i);
+    const d = detrend(x);
+    for (const v of d) expect(Math.abs(v)).toBeLessThan(1e-9);
+  });
+
+  it('resamples irregular timestamps to a uniform grid', () => {
+    const t = [0, 0.03, 0.07, 0.1, 0.14, 0.2];
+    const v = t.map((x) => x * 10);
+    const { y } = resampleUniform(t, v, 50);
+    expect(y.length).toBe(11);
+    for (let i = 0; i < y.length; i++) expect(y[i]).toBeCloseTo((i / 50) * 10, 6);
+  });
+});
+
