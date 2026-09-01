@@ -134,3 +134,37 @@ export class Magnifier {
     if (this.params.mode === 'color') {
       const k = this.colorLevel();
       this.iirStep(k, this.g[k].tex, r1, r2, reset);
+      const gain = this.params.alpha;
+      const cur = this.iir[k][this.iirCur[k]];
+      this.draw('colorBand', this.diff!, (u) => {
+        this.bindTex('u_lo1', cur.a, 0);
+        this.bindTex('u_lo2', cur.b, 1);
+        gl.uniform2f(u.get('u_size')!, cur.w, cur.h);
+        gl.uniform3f(u.get('u_gain')!, gain, gain * this.params.chromaAtt, gain * this.params.chromaAtt);
+      });
+      return;
+    }
+
+    // 3. Laplacian bands.
+    for (let i = 0; i < L - 1; i++) {
+      this.draw('lap', this.lap[i], () => {
+        this.bindTex('u_fine', this.g[i].tex, 0);
+        this.bindTex('u_coarse', this.g[i + 1].tex, 1);
+      });
+    }
+    // Coarsest "band" is the residual low-pass.
+    // 4. Temporal filtering on the bands we amplify (skip finest & coarsest, as in the paper).
+    const gains = this.motionGains();
+    for (let i = 1; i < L - 1; i++) this.iirStep(i, this.lap[i].tex, r1, r2, reset);
+
+    // 5. Collapse from coarse to fine, accumulating only the amplified band terms.
+    let coarse: Target | null = null;
+    for (let i = L - 2; i >= 0; i--) {
+      const target = i === 0 ? this.diff! : this.collapse[i];
+      const cur = this.iir[i] ? this.iir[i][this.iirCur[i]] : null;
+      const gain = gains[i];
+      const prevCoarse = coarse;
+      this.draw('collapse', target, (u) => {
+        gl.uniform1f(u.get('u_hasCoarse')!, prevCoarse ? 1 : 0);
+        this.bindTex('u_coarse', prevCoarse ? prevCoarse.tex : this.g[0].tex, 0);
+        this.bindTex('u_lo1', cur ? cur.a : this.g[0].tex, 1);
