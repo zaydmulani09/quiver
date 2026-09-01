@@ -63,3 +63,21 @@ describe('filters', () => {
   });
 });
 
+/** Synthesises the mean skin colour a webcam would see: baseline + tiny pulse + lighting drift + noise. */
+function synthSkin(seconds: number, fs: number, bpm: number, noise = 0.6) {
+  const n = Math.round(seconds * fs);
+  const t: number[] = [], r: number[] = [], g: number[] = [], b: number[] = [];
+  let seed = 7;
+  const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296 - 0.5; };
+  for (let i = 0; i < n; i++) {
+    const time = i / fs + rnd() * 0.004; // jittered timestamps like a real camera
+    const pulse = Math.sin(2 * Math.PI * (bpm / 60) * time);
+    const drift = 6 * Math.sin(2 * Math.PI * 0.08 * time); // slow lighting / auto-exposure
+    const spec = 2 * Math.sin(2 * Math.PI * 0.3 * time);    // specular / head motion
+    t.push(time);
+    r.push(160 + drift + spec * 1.0 + pulse * 0.35 + rnd() * noise);
+    g.push(120 + drift + spec * 1.0 + pulse * 0.6 + rnd() * noise);
+    b.push(100 + drift + spec * 1.0 + pulse * 0.2 + rnd() * noise);
+  }
+  return { t, r, g, b };
+}
