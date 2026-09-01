@@ -32,3 +32,37 @@ const MAX_PROCESS_DIM = 640;
  *
  *   video ─► YIQ (≤640px) ─► Gaussian pyramid ─► [Laplacian bands]
  *        ─► per-level temporal IIR band-pass (two low-passes, MRT ping-pong)
+ *        ─► gain per level (λ-clipped for motion) ─► collapse ─► "diff" texture
+ *   display = full-res video + diff   (or compare / signal / original views)
+ */
+export class Magnifier {
+  readonly gl: WebGL2RenderingContext;
+  private programs = new Map<string, WebGLProgram>();
+  private uniforms = new Map<string, Map<string, WebGLUniformLocation | null>>();
+  private vao: WebGLVertexArrayObject;
+
+  private videoTex: WebGLTexture;
+  private videoW = 0;
+  private videoH = 0;
+  private procW = 0;
+  private procH = 0;
+
+  private g: Target[] = [];        // Gaussian levels
+  private lap: Target[] = [];      // Laplacian levels (motion mode)
+  private iir: Pair[][] = [];      // per level: [pingA, pingB] each holding lo1 & lo2
+  private iirCur: number[] = [];   // which ping is current per level
+  private collapse: Target[] = []; // per level collapse targets (motion)
+  private diff: Target | null = null;
+  private needsReset = true;
+
+  params: MagnifierParams = { ...DEFAULT_PARAMS };
+  view: ViewMode = 'magnified';
+  split = 0.5;
+  mirror = true;
+  signalGain = 4;
+
+  constructor(readonly canvas: HTMLCanvasElement) {
+    const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, premultipliedAlpha: false, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+    if (!gl) throw new Error('WebGL2 is not available');
+    this.gl = gl;
+    // RGBA16F render targets: covered by either extension (both are near-universal on WebGL2).
