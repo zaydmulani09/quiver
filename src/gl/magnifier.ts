@@ -202,3 +202,37 @@ export class Magnifier {
 
   /** The pyramid level used in colour mode. */
   colorLevel(): number {
+    if (this.params.level >= 0) return Math.min(this.params.level, this.g.length - 1);
+    const short = Math.min(this.procW, this.procH);
+    const k = Math.round(Math.log2(short / 32));
+    return Math.max(1, Math.min(this.g.length - 1, k));
+  }
+
+  /** Per-level amplification for motion mode, clipped by the λ rule from Wu et al. */
+  private motionGains(): number[] {
+    const L = this.g.length;
+    const { alpha, lambdaC } = this.params;
+    const gains = new Array<number>(L).fill(0);
+    let lambda = Math.sqrt(this.procW * this.procW + this.procH * this.procH) / 3;
+    const delta = lambdaC / 8 / (1 + alpha);
+    for (let i = L - 1; i >= 0; i--) {
+      const cur = (lambda / delta / 8 - 1) * 2;
+      gains[i] = i === L - 1 || i === 0 ? 0 : Math.max(0, Math.min(alpha, cur));
+      lambda /= 2;
+    }
+    return gains;
+  }
+
+  private iirStep(level: number, x: WebGLTexture, r1: number, r2: number, reset: number): void {
+    const gl = this.gl;
+    const pair = this.iir[level];
+    const curIdx = this.iirCur[level];
+    const cur = pair[curIdx];
+    const next = pair[1 - curIdx];
+    gl.bindFramebuffer(gl.FRAMEBUFFER, next.fbo);
+    gl.viewport(0, 0, next.w, next.h);
+    const u = this.use('iir');
+    this.bindTex('u_x', x, 0);
+    this.bindTex('u_lo1', cur.a, 1);
+    this.bindTex('u_lo2', cur.b, 2);
+    gl.uniform1f(u.get('u_r1')!, r1);
