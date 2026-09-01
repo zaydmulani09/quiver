@@ -39,3 +39,18 @@ void main() {
   o = vec4(rgb2yiq(c), 1.0);
 }`;
 
+/** Gaussian-ish 2× downsample (dual-filter kernel: centre ×4 plus four diagonal taps). */
+export const FRAG_DOWN = `#version 300 es
+precision highp float;
+uniform sampler2D u_src;
+uniform vec2 u_texel; // 1 / source size
+in vec2 v_uv;
+out vec4 o;
+void main() {
+  vec3 c = texture(u_src, v_uv).rgb * 4.0;
+  c += texture(u_src, v_uv + vec2(-u_texel.x, -u_texel.y)).rgb;
+  c += texture(u_src, v_uv + vec2( u_texel.x, -u_texel.y)).rgb;
+  c += texture(u_src, v_uv + vec2(-u_texel.x,  u_texel.y)).rgb;
+  c += texture(u_src, v_uv + vec2( u_texel.x,  u_texel.y)).rgb;
+  o = vec4(c / 8.0, 1.0);
+}`;
