@@ -148,3 +148,38 @@ void main() {
   vec3 band = bicubic(u_lo1, v_uv) - bicubic(u_lo2, v_uv);
   o = vec4(band * u_gain, 1.0);
 }`;
+
+/**
+ * Final composite onto the visible canvas. Adds the amplified band to the *full-resolution*
+ * video (so sharpness is preserved even though processing ran at a lower resolution),
+ * handles mirroring, letterboxing, the before/after split and the "signal" heat view.
+ */
+export const FRAG_DISPLAY = `#version 300 es
+precision highp float;
+uniform sampler2D u_video;
+uniform sampler2D u_diff;
+uniform int u_view;        // 0 magnified, 1 compare, 2 signal, 3 original
+uniform float u_split;     // compare position 0..1 (in canvas space)
+uniform float u_flip;      // 1 = mirror horizontally
+uniform vec2 u_scale;      // letterbox scale
+uniform vec2 u_offset;     // letterbox offset
+uniform float u_signalGain;
+uniform vec2 u_canvas;     // canvas size in px
+in vec2 v_uv;
+out vec4 o;
+${COLOR_SPACE}
+
+vec3 heat(float v) {
+  // Signed diverging map: cool blues for negative, warm oranges for positive, on near-black.
+  float a = clamp(abs(v), 0.0, 1.0);
+  vec3 warm = mix(vec3(0.55, 0.05, 0.02), vec3(1.0, 0.85, 0.35), a);
+  vec3 cool = mix(vec3(0.02, 0.10, 0.45), vec3(0.45, 0.95, 1.0), a);
+  return (v >= 0.0 ? warm : cool) * a;
+}
+
+void main() {
+  vec2 uv = (v_uv - u_offset) / u_scale;
+  if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) { o = vec4(0.0, 0.0, 0.0, 1.0); return; }
+  float cx = v_uv.x;
+  if (u_flip > 0.5) uv.x = 1.0 - uv.x;
+  vec3 rgb = texture(u_video, vec2(uv.x, 1.0 - uv.y)).rgb;
