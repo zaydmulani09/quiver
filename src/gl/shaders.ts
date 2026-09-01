@@ -134,3 +134,17 @@ vec3 bicubic(sampler2D tex, vec2 uv) {
   vec4 yc = cubic(fxy.y);
   vec4 c = coords.xxyy + vec2(-0.5, 1.5).xyxy;
   vec4 s = vec4(xc.xz + xc.yw, yc.xz + yc.yw);
+  vec4 off = c + vec4(xc.yw, yc.yw) / s;
+  off *= texel.xxyy;
+  vec3 s0 = texture(tex, off.xz).rgb;
+  vec3 s1 = texture(tex, off.yz).rgb;
+  vec3 s2 = texture(tex, off.xw).rgb;
+  vec3 s3 = texture(tex, off.yw).rgb;
+  float sx = s.x / (s.x + s.y);
+  float sy = s.z / (s.z + s.w);
+  return mix(mix(s3, s2, sx), mix(s1, s0, sx), sy);
+}
+void main() {
+  vec3 band = bicubic(u_lo1, v_uv) - bicubic(u_lo2, v_uv);
+  o = vec4(band * u_gain, 1.0);
+}`;
