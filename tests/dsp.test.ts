@@ -116,3 +116,19 @@ describe('POS + HeartRateEstimator', () => {
     for (let i = 0; i < 360; i++) est.push(i / 30, 150 + rnd() * 8, 110 + rnd() * 8, 90 + rnd() * 8);
     const reading = est.update();
     expect(reading.confidence).toBeLessThan(0.35);
+  });
+
+  it('reports a beat event roughly once per period', () => {
+    const fs = 30, bpm = 60;
+    const est = new HeartRateEstimator({ fs });
+    const s = synthSkin(16, fs, bpm, 0.2);
+    let beats = 0;
+    for (let i = 0; i < s.t.length; i++) {
+      est.push(s.t[i], s.r[i], s.g[i], s.b[i]);
+      if (i % 3 === 0 && est.update().beat) beats++;
+    }
+    // ~16 s of signal at 60 bpm; the first ~4 s are spent locking on.
+    expect(beats).toBeGreaterThan(6);
+    expect(beats).toBeLessThan(20);
+  });
+});
