@@ -100,3 +100,37 @@ export class HeartRateEstimator {
 
     // Waveform for display: last `display` seconds, normalised to unit RMS.
     const dispN = Math.min(n, Math.round(this.display * this.fs));
+    const waveform = new Float64Array(dispN);
+    let rms = 0;
+    for (let i = 0; i < dispN; i++) { const v = filtered[n - dispN + i]; waveform[i] = v; rms += v * v; }
+    rms = Math.sqrt(rms / Math.max(1, dispN)) || 1;
+    for (let i = 0; i < dispN; i++) waveform[i] /= rms;
+
+    // Spectrum on the analysis window, gated by SNR.
+    const w = hann(n);
+    const windowed = new Float64Array(n);
+    for (let i = 0; i < n; i++) windowed[i] = filtered[i] * w[i];
+    const power = powerSpectrum(windowed, this.nfft);
+    const lobe = Math.ceil((2 * this.nfft) / n);
+    const { freq, snr } = dominantFrequency(power, this.fs, this.nfft, this.minHz, this.maxHz, lobe);
+    const rawBpm = freq * 60;
+
+    // Confidence: SNR mapped through a soft ramp, scaled by how much signal we have.
+    const snrConf = Math.max(0, Math.min(1, (snr - 0.6) / 2.4));
+    const timeConf = Math.max(0, Math.min(1, (seconds - 3) / 5));
+    const confidence = snrConf * timeConf;
+
+    // Smoothing with persistence: accept a big jump only if it holds for ~1.5 s.
+    const now = this.t[this.t.length - 1];
+    if (confidence > 0.25 && rawBpm > 0) {
+      if (this.smoothed === null) {
+        this.smoothed = rawBpm;
+      } else if (Math.abs(rawBpm - this.smoothed) < 12) {
+        this.smoothed += (rawBpm - this.smoothed) * 0.25;
+        this.candidate = null;
+      } else {
+        if (this.candidate === null || Math.abs(rawBpm - this.candidate) > 8) {
+          this.candidate = rawBpm;
+          this.candidateSince = now;
+        } else if (now - this.candidateSince > 1.5) {
+          this.smoothed = rawBpm;
