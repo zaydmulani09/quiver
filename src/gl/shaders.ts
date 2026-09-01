@@ -32,3 +32,10 @@ export const FRAG_TO_YIQ = `#version 300 es
 precision highp float;
 uniform sampler2D u_src;
 in vec2 v_uv;
+out vec4 o;
+${COLOR_SPACE}
+void main() {
+  vec3 c = texture(u_src, vec2(v_uv.x, 1.0 - v_uv.y)).rgb;
+  o = vec4(rgb2yiq(c), 1.0);
+}`;
+
