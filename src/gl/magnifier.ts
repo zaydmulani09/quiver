@@ -66,3 +66,37 @@ export class Magnifier {
     if (!gl) throw new Error('WebGL2 is not available');
     this.gl = gl;
     // RGBA16F render targets: covered by either extension (both are near-universal on WebGL2).
+    const floatExt = gl.getExtension('EXT_color_buffer_float');
+    const halfExt = gl.getExtension('EXT_color_buffer_half_float');
+    if (!floatExt && !halfExt) throw new Error('Float render targets are not supported');
+
+    for (const [name, frag] of Object.entries({ toYiq: FRAG_TO_YIQ, down: FRAG_DOWN, lap: FRAG_LAPLACIAN, iir: FRAG_IIR, collapse: FRAG_COLLAPSE, colorBand: FRAG_COLOR_BAND, display: FRAG_DISPLAY })) {
+      const { prog, uniforms } = this.link(VERT, frag);
+      this.programs.set(name, prog);
+      this.uniforms.set(name, uniforms);
+    }
+    this.vao = gl.createVertexArray()!;
+    this.videoTex = gl.createTexture()!;
+    gl.bindTexture(gl.TEXTURE_2D, this.videoTex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
+  }
+
+  get processingSize(): { w: number; h: number } { return { w: this.procW, h: this.procH }; }
+  get levels(): number { return this.g.length; }
+
+  setParams(p: Partial<MagnifierParams>): void {
+    const prev = this.params;
+    this.params = { ...prev, ...p };
+    if (p.mode !== undefined && p.mode !== prev.mode) this.needsReset = true;
+    if (p.level !== undefined && p.level !== prev.level) this.needsReset = true;
+  }
+
+  reset(): void { this.needsReset = true; }
+
+  /** Feed one new video frame. `dt` is the time since the previous frame in seconds. */
+  process(video: HTMLVideoElement, dt: number): void {
+    const gl = this.gl;
