@@ -100,3 +100,37 @@ uniform vec3 u_gain;
 uniform float u_hasCoarse;
 in vec2 v_uv;
 out vec4 o;
+void main() {
+  vec3 base = u_hasCoarse > 0.5 ? texture(u_coarse, v_uv).rgb : vec3(0.0);
+  vec3 band = texture(u_lo1, v_uv).rgb - texture(u_lo2, v_uv).rgb;
+  o = vec4(base + band * u_gain, 1.0);
+}`;
+
+/** Colour mode: bicubic-upsample the low-resolution band and scale it. */
+export const FRAG_COLOR_BAND = `#version 300 es
+precision highp float;
+uniform sampler2D u_lo1;
+uniform sampler2D u_lo2;
+uniform vec2 u_size; // band texture size
+uniform vec3 u_gain;
+in vec2 v_uv;
+out vec4 o;
+
+vec4 cubic(float v) {
+  vec4 n = vec4(1.0, 2.0, 3.0, 4.0) - v;
+  vec4 s = n * n * n;
+  float x = s.x;
+  float y = s.y - 4.0 * s.x;
+  float z = s.z - 4.0 * s.y + 6.0 * s.x;
+  float w = 6.0 - x - y - z;
+  return vec4(x, y, z, w) * (1.0 / 6.0);
+}
+vec3 bicubic(sampler2D tex, vec2 uv) {
+  vec2 texel = 1.0 / u_size;
+  vec2 coords = uv * u_size - 0.5;
+  vec2 fxy = fract(coords);
+  coords -= fxy;
+  vec4 xc = cubic(fxy.x);
+  vec4 yc = cubic(fxy.y);
+  vec4 c = coords.xxyy + vec2(-0.5, 1.5).xyxy;
+  vec4 s = vec4(xc.xz + xc.yw, yc.xz + yc.yw);
