@@ -134,3 +134,31 @@ export class HeartRateEstimator {
           this.candidateSince = now;
         } else if (now - this.candidateSince > 1.5) {
           this.smoothed = rawBpm;
+          this.candidate = null;
+        }
+      }
+    }
+    this.conf += (confidence - this.conf) * 0.3;
+
+    // Beat detection on the filtered pulse: the newest confirmed local maximum in the last 0.6 s
+    // that we have not reported yet.
+    let beat = false;
+    const guard = 2;
+    const minGap = (1 / this.maxHz) * 0.9;
+    let thresh = 0;
+    for (let i = n - dispN; i < n; i++) thresh = Math.max(thresh, Math.abs(filtered[i]));
+    thresh *= 0.35;
+    for (let i = n - guard - 1; i > n - guard - Math.round(0.6 * this.fs) && i > 1; i--) {
+      if (filtered[i] > thresh && filtered[i] > filtered[i - 1] && filtered[i] >= filtered[i + 1]) {
+        const tPeak = R.t0 + i / this.fs;
+        if (tPeak - this.lastBeatTime > minGap && this.conf > 0.2) {
+          this.lastBeatTime = tPeak;
+          beat = true;
+        }
+        break;
+      }
+    }
+
+    return { bpm: this.conf > 0.15 ? this.smoothed : null, rawBpm, confidence: this.conf, seconds, waveform, beat };
+  }
+}
