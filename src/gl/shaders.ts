@@ -65,3 +65,38 @@ out vec4 o;
 void main() {
   o = vec4(texture(u_fine, v_uv).rgb - texture(u_coarse, v_uv).rgb, 1.0);
 }`;
+
+/**
+ * Temporal IIR step. Two first-order low-pass filters run side by side (MRT);
+ * their difference is a band-pass. r = 1 - exp(-2π f_c dt).
+ */
+export const FRAG_IIR = `#version 300 es
+precision highp float;
+uniform sampler2D u_x;
+uniform sampler2D u_lo1;
+uniform sampler2D u_lo2;
+uniform float u_r1;
+uniform float u_r2;
+uniform float u_reset;
+in vec2 v_uv;
+layout(location = 0) out vec4 o1;
+layout(location = 1) out vec4 o2;
+void main() {
+  vec3 x = texture(u_x, v_uv).rgb;
+  if (u_reset > 0.5) { o1 = vec4(x, 1.0); o2 = vec4(x, 1.0); return; }
+  vec3 a = texture(u_lo1, v_uv).rgb;
+  vec3 b = texture(u_lo2, v_uv).rgb;
+  o1 = vec4(mix(a, x, u_r1), 1.0);
+  o2 = vec4(mix(b, x, u_r2), 1.0);
+}`;
+
+/** Motion mode collapse: D_i = up(D_{i+1}) + gain_i · (lo1_i − lo2_i). */
+export const FRAG_COLLAPSE = `#version 300 es
+precision highp float;
+uniform sampler2D u_coarse;
+uniform sampler2D u_lo1;
+uniform sampler2D u_lo2;
+uniform vec3 u_gain;
+uniform float u_hasCoarse;
+in vec2 v_uv;
+out vec4 o;
