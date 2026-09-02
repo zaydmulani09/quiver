@@ -269,3 +269,38 @@ export class Magnifier {
     this.diff = this.target(this.procW, this.procH);
     this.needsReset = true;
   }
+
+  dispose(all = true): void {
+    const gl = this.gl;
+    const kill = (t: Target) => { gl.deleteTexture(t.tex); gl.deleteFramebuffer(t.fbo); };
+    this.g.forEach(kill); this.lap.forEach(kill); this.collapse.forEach(kill);
+    for (const pr of this.iir) for (const p of pr) { gl.deleteTexture(p.a); gl.deleteTexture(p.b); gl.deleteFramebuffer(p.fbo); }
+    if (this.diff) kill(this.diff);
+    this.g = []; this.lap = []; this.collapse = []; this.iir = []; this.iirCur = []; this.diff = null;
+    if (all) {
+      gl.deleteTexture(this.videoTex);
+      for (const p of this.programs.values()) gl.deleteProgram(p);
+      gl.deleteVertexArray(this.vao);
+    }
+  }
+
+  // ---- GL plumbing -------------------------------------------------------
+
+  private texture(w: number, h: number): WebGLTexture {
+    const gl = this.gl;
+    const tex = gl.createTexture()!;
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    return tex;
+  }
+
+  private target(w: number, h: number): Target {
+    const gl = this.gl;
+    const tex = this.texture(w, h);
+    const fbo = gl.createFramebuffer()!;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
