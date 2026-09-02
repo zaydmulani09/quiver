@@ -100,3 +100,26 @@ export class VideoSource {
     }
     if (this.objectUrl) {
       URL.revokeObjectURL(this.objectUrl);
+      this.objectUrl = null;
+    }
+    this.video.srcObject = null;
+    this.video.removeAttribute('src');
+    this.video.loop = false;
+    this.info = null;
+  }
+
+  private ready(): Promise<void> {
+    const v = this.video;
+    return new Promise((resolve, reject) => {
+      const onMeta = () => {
+        cleanup();
+        v.play().then(resolve).catch(reject);
+      };
+      const onErr = () => { cleanup(); reject(new Error('Could not decode that video')); };
+      const cleanup = () => { v.removeEventListener('loadedmetadata', onMeta); v.removeEventListener('error', onErr); };
+      v.addEventListener('loadedmetadata', onMeta, { once: true });
+      v.addEventListener('error', onErr, { once: true });
+      if (v.readyState >= 1) onMeta();
+    });
+  }
+}
