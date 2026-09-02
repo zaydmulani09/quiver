@@ -66,3 +66,8 @@ export async function renderShareCard(bpm: number, waveform: Float64Array, siteU
     ctx.fillStyle = '#ff4d4d';
     ctx.beginPath();
     ctx.arc(x1, yMid - Math.max(-1.6, Math.min(1.6, waveform[n - 1])) * amp, 7, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('toBlob failed'))), 'image/png'));
+}
