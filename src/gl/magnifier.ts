@@ -338,3 +338,37 @@ export class Magnifier {
   private use(name: string): Map<string, WebGLUniformLocation | null> {
     this.gl.useProgram(this.programs.get(name)!);
     this.current = name;
+    return this.uniforms.get(name)!;
+  }
+  private current = '';
+
+  private bindTex(uniform: string, tex: WebGLTexture, unit: number): void {
+    const gl = this.gl;
+    gl.activeTexture(gl.TEXTURE0 + unit);
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.uniform1i(this.uniforms.get(this.current)!.get(uniform)!, unit);
+  }
+
+  private link(vs: string, fs: string): { prog: WebGLProgram; uniforms: Map<string, WebGLUniformLocation | null> } {
+    const gl = this.gl;
+    const compile = (type: number, src: string) => {
+      const sh = gl.createShader(type)!;
+      gl.shaderSource(sh, src);
+      gl.compileShader(sh);
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error('Shader error: ' + gl.getShaderInfoLog(sh));
+      return sh;
+    };
+    const prog = gl.createProgram()!;
+    gl.attachShader(prog, compile(gl.VERTEX_SHADER, vs));
+    gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error('Link error: ' + gl.getProgramInfoLog(prog));
+    const n = gl.getProgramParameter(prog, gl.ACTIVE_UNIFORMS) as number;
+    const map = new Map<string, WebGLUniformLocation | null>();
+    for (let i = 0; i < n; i++) {
+      const info = gl.getActiveUniform(prog, i)!;
+      map.set(info.name, gl.getUniformLocation(prog, info.name));
+    }
+    return { prog, uniforms: map };
+  }
+}
