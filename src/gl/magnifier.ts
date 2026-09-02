@@ -304,3 +304,37 @@ export class Magnifier {
     const fbo = gl.createFramebuffer()!;
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    this.checkFbo();
+    return { tex, fbo, w, h };
+  }
+
+  private pair(w: number, h: number): Pair {
+    const gl = this.gl;
+    const a = this.texture(w, h), b = this.texture(w, h);
+    const fbo = gl.createFramebuffer()!;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, a, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT1, gl.TEXTURE_2D, b, 0);
+    gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1]);
+    this.checkFbo();
+    return { a, b, fbo, w, h };
+  }
+
+  private checkFbo(): void {
+    const gl = this.gl;
+    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (status !== gl.FRAMEBUFFER_COMPLETE) throw new Error('Framebuffer incomplete: 0x' + status.toString(16));
+  }
+
+  private draw(name: string, target: Target, setup: (u: Map<string, WebGLUniformLocation | null>) => void): void {
+    const gl = this.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, target.fbo);
+    gl.viewport(0, 0, target.w, target.h);
+    const u = this.use(name);
+    setup(u);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+
+  private use(name: string): Map<string, WebGLUniformLocation | null> {
+    this.gl.useProgram(this.programs.get(name)!);
+    this.current = name;
