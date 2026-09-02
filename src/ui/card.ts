@@ -32,3 +32,37 @@ export async function renderShareCard(bpm: number, waveform: Float64Array, siteU
   const num = String(Math.round(bpm));
   ctx.fillText(num, 72, 400);
   const numW = ctx.measureText(num).width;
+  ctx.fillStyle = '#8a8a93';
+  ctx.font = '400 56px "Geist", system-ui, sans-serif';
+  ctx.fillText('bpm', 72 + numW + 28, 400);
+
+  // Caption.
+  ctx.fillStyle = '#ededed';
+  ctx.font = 'italic 400 46px "Instrument Serif", Georgia, serif';
+  ctx.fillText('my heartbeat, measured by a webcam.', 72, 470);
+  ctx.fillStyle = '#8a8a93';
+  ctx.font = '400 26px "Geist", system-ui, sans-serif';
+  ctx.fillText('No contact. No upload. Eulerian video magnification + rPPG, in the browser.', 72, 515);
+  ctx.fillStyle = '#ff4d4d';
+  ctx.font = '500 26px "Geist Mono", ui-monospace, monospace';
+  ctx.fillText(siteUrl, 72, 566);
+
+  // Pulse trace.
+  const n = waveform.length;
+  const x0 = 760, x1 = 1140, yMid = 300, amp = 70;
+  if (n > 1) {
+    ctx.strokeStyle = 'rgba(255,77,77,0.28)';
+    ctx.lineWidth = 12; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    const path = new Path2D();
+    for (let i = 0; i < n; i++) {
+      const x = x0 + (i / (n - 1)) * (x1 - x0);
+      const y = yMid - Math.max(-1.6, Math.min(1.6, waveform[i])) * amp;
+      if (i === 0) path.moveTo(x, y); else path.lineTo(x, y);
+    }
+    ctx.stroke(path);
+    ctx.strokeStyle = '#ff4d4d';
+    ctx.lineWidth = 3.5;
+    ctx.stroke(path);
+    ctx.fillStyle = '#ff4d4d';
+    ctx.beginPath();
+    ctx.arc(x1, yMid - Math.max(-1.6, Math.min(1.6, waveform[n - 1])) * amp, 7, 0, Math.PI * 2);
