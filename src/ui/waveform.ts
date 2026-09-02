@@ -32,3 +32,37 @@ export class Waveform {
     ctx.clearRect(0, 0, w, h);
 
     // Baseline grid.
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, h / 2 + 0.5); ctx.lineTo(w, h / 2 + 0.5);
+    ctx.stroke();
+
+    const n = this.data.length;
+    if (n < 2) {
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      ctx.font = `${12 * this.dpr}px "Geist Mono", ui-monospace, monospace`;
+      ctx.textAlign = 'center';
+      ctx.fillText('waiting for signal', w / 2, h / 2 + 4 * this.dpr);
+      return;
+    }
+
+    const amp = h * 0.32;
+    const path = new Path2D();
+    for (let i = 0; i < n; i++) {
+      const x = (i / (n - 1)) * w;
+      const y = h / 2 - Math.max(-1.6, Math.min(1.6, this.data[i])) * amp;
+      if (i === 0) path.moveTo(x, y); else path.lineTo(x, y);
+    }
+
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    // Glow.
+    ctx.strokeStyle = this.color;
+    ctx.globalAlpha = 0.25;
+    ctx.lineWidth = 6 * this.dpr;
+    ctx.stroke(path);
+    // Core line.
+    ctx.globalAlpha = 1;
+    ctx.lineWidth = 1.6 * this.dpr;
+    ctx.stroke(path);
