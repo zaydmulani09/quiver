@@ -32,3 +32,37 @@
   --surface: #131315;
   --surface-2: #1a1a1d;
   --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --text: #ededed;
+  --muted: #8a8a93;
+  --accent: #ff4d4d;
+  --accent-soft: rgba(255, 77, 77, 0.16);
+  --serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --sans: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --radius: 18px;
+  --stage-ar: 16 / 9;
+  color-scheme: dark;
+}
+[data-mode='breath'] { --accent: #5ee1ff; --accent-soft: rgba(94, 225, 255, 0.16); }
+[data-mode='vibration'] { --accent: #ffb547; --accent-soft: rgba(255, 181, 71, 0.16); }
+[data-mode='custom'] { --accent: #c084fc; --accent-soft: rgba(192, 132, 252, 0.16); }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; }
+kbd {
+  font-family: var(--mono);
