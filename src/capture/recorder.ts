@@ -32,3 +32,37 @@ export class CanvasRecorder {
     if (this.recording) return;
     const stream = this.canvas.captureStream(30);
     const mimeType = this.pickMime();
+    this.recorder = new MediaRecorder(stream, mimeType ? { mimeType, videoBitsPerSecond: 8_000_000 } : undefined);
+    this.chunks = [];
+    this.recorder.ondataavailable = (e) => { if (e.data.size) this.chunks.push(e.data); };
+    this.recorder.start(250);
+    this.startedAt = performance.now();
+    this.timer = window.setTimeout(() => { if (this.recording) onAutoStop(); }, this.maxSeconds * 1000);
+  }
+
+  stop(): Promise<{ blob: Blob; ext: string }> {
+    return new Promise((resolve, reject) => {
+      const rec = this.recorder;
+      if (!rec || rec.state === 'inactive') { reject(new Error('Not recording')); return; }
+      if (this.timer) { clearTimeout(this.timer); this.timer = null; }
+      rec.onstop = () => {
+        const type = rec.mimeType || 'video/webm';
+        const blob = new Blob(this.chunks, { type });
+        const ext = type.includes('mp4') ? 'mp4' : 'webm';
+        for (const t of rec.stream.getTracks()) t.stop();
+        this.recorder = null;
+        resolve({ blob, ext });
+      };
+      rec.stop();
+    });
+  }
+}
+
+/** Save or share a blob. Uses the Web Share API when it can hand the file to another app. */
+export async function deliverFile(blob: Blob, filename: string, title: string): Promise<'shared' | 'saved'> {
+  const file = new File([blob], filename, { type: blob.type });
+  const nav = navigator as Navigator & { canShare?: (d: ShareData) => boolean };
+  if (nav.share && nav.canShare && nav.canShare({ files: [file] })) {
+    try {
+      await nav.share({ files: [file], title });
+      return 'shared';
