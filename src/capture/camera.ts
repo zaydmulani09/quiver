@@ -66,3 +66,37 @@ export class VideoSource {
     } catch { /* enumeration unavailable — flipping stays disabled */ }
     this.info = { kind: 'camera', facing: actualFacing, label: track.label || 'Camera', canFlip };
     return this.info;
+  }
+
+  /** Feed an arbitrary MediaStream (used by the dev-only synthetic camera). */
+  async startStream(stream: MediaStream, label: string): Promise<SourceInfo> {
+    this.stop();
+    this.stream = stream;
+    this.video.srcObject = stream;
+    await this.ready();
+    this.info = { kind: 'camera', facing: 'environment', label, canFlip: false };
+    return this.info;
+  }
+
+  async flip(): Promise<SourceInfo> {
+    return this.startCamera(this.facing === 'user' ? 'environment' : 'user');
+  }
+
+  async loadFile(file: File): Promise<SourceInfo> {
+    this.stop();
+    this.objectUrl = URL.createObjectURL(file);
+    this.video.srcObject = null;
+    this.video.loop = true;
+    this.video.src = this.objectUrl;
+    await this.ready();
+    this.info = { kind: 'file', facing: 'environment', label: file.name, canFlip: false };
+    return this.info;
+  }
+
+  stop(): void {
+    if (this.stream) {
+      for (const t of this.stream.getTracks()) t.stop();
+      this.stream = null;
+    }
+    if (this.objectUrl) {
+      URL.revokeObjectURL(this.objectUrl);
