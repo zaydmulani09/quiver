@@ -66,3 +66,20 @@ export class Waveform {
     ctx.globalAlpha = 1;
     ctx.lineWidth = 1.6 * this.dpr;
     ctx.stroke(path);
+
+    // Fade the oldest part into the background.
+    const fade = ctx.createLinearGradient(0, 0, w * 0.35, 0);
+    fade.addColorStop(0, 'rgba(14,14,16,1)');
+    fade.addColorStop(1, 'rgba(14,14,16,0)');
+    ctx.fillStyle = fade;
+    ctx.fillRect(0, 0, w * 0.35, h);
+
+    // Leading dot with a beat flash.
+    const lx = w, ly = h / 2 - Math.max(-1.6, Math.min(1.6, this.data[n - 1])) * amp;
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(lx - 2 * this.dpr, ly, (2.5 + this.flash * 5) * this.dpr, 0, Math.PI * 2);
+    ctx.fill();
+    this.flash *= 0.85;
+  }
+}
