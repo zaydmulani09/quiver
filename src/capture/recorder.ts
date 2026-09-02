@@ -66,3 +66,18 @@ export async function deliverFile(blob: Blob, filename: string, title: string): 
     try {
       await nav.share({ files: [file], title });
       return 'shared';
+    } catch (err) {
+      if ((err as DOMException).name === 'AbortError') return 'shared';
+      // fall through to download
+    }
+  }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10_000);
+  return 'saved';
+}
