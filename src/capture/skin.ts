@@ -32,3 +32,33 @@ export class SkinSampler {
     if (!vw || !vh) return null;
     const sx = (roi.cx - roi.rx) * vw, sy = (roi.cy - roi.ry) * vh;
     const sw = roi.rx * 2 * vw, sh = roi.ry * 2 * vh;
+    const n = this.size;
+    try {
+      this.ctx.drawImage(video, sx, sy, sw, sh, 0, 0, n, n);
+    } catch {
+      return null;
+    }
+    const data = this.ctx.getImageData(0, 0, n, n).data;
+    let r = 0, g = 0, b = 0, count = 0, inside = 0;
+    const half = n / 2;
+    for (let y = 0; y < n; y++) {
+      const dy = (y + 0.5 - half) / half;
+      for (let x = 0; x < n; x++) {
+        const dx = (x + 0.5 - half) / half;
+        if (dx * dx + dy * dy > 1) continue;
+        inside++;
+        const i = (y * n + x) * 4;
+        const R = data[i], G = data[i + 1], B = data[i + 2];
+        const yy = 0.299 * R + 0.587 * G + 0.114 * B;
+        if (yy < 25 || yy > 245) continue;
+        const cb = 128 - 0.168736 * R - 0.331264 * G + 0.5 * B;
+        const cr = 128 + 0.5 * R - 0.418688 * G - 0.081312 * B;
+        if (cb < 77 || cb > 127 || cr < 133 || cr > 177) continue;
+        r += R; g += G; b += B; count++;
+      }
+    }
+    if (!inside) return null;
+    if (!count) return { r: 0, g: 0, b: 0, coverage: 0 };
+    return { r: r / count, g: g / count, b: b / count, coverage: count / inside };
+  }
+}
