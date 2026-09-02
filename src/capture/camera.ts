@@ -31,3 +31,38 @@ export class VideoSource {
   static get supported(): boolean {
     return typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia;
   }
+
+  async startCamera(facing: Facing = this.facing): Promise<SourceInfo> {
+    this.stop();
+    const constraints: MediaStreamConstraints = {
+      audio: false,
+      video: {
+        facingMode: facing,
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+        frameRate: { ideal: 30, max: 60 },
+      },
+    };
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
+    } catch (err) {
+      // Some desktop cameras reject facingMode outright; retry without it.
+      if ((err as DOMException).name === 'OverconstrainedError') {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { width: { ideal: 1280 }, height: { ideal: 720 } } });
+      } else throw err;
+    }
+    this.stream = stream;
+    this.facing = facing;
+    this.video.srcObject = stream;
+    await this.ready();
+    const track = stream.getVideoTracks()[0];
+    const settings = track.getSettings();
+    const actualFacing = (settings.facingMode as Facing | undefined) ?? facing;
+    let canFlip = false;
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      canFlip = devices.filter((d) => d.kind === 'videoinput').length > 1;
+    } catch { /* enumeration unavailable — flipping stays disabled */ }
+    this.info = { kind: 'camera', facing: actualFacing, label: track.label || 'Camera', canFlip };
+    return this.info;
