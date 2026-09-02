@@ -236,3 +236,36 @@ export class Magnifier {
     this.bindTex('u_lo1', cur.a, 1);
     this.bindTex('u_lo2', cur.b, 2);
     gl.uniform1f(u.get('u_r1')!, r1);
+    gl.uniform1f(u.get('u_r2')!, r2);
+    gl.uniform1f(u.get('u_reset')!, reset);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    this.iirCur[level] = 1 - curIdx;
+  }
+
+  private allocate(vw: number, vh: number): void {
+    const gl = this.gl;
+    this.dispose(false);
+    this.videoW = vw; this.videoH = vh;
+    const scale = Math.min(1, MAX_PROCESS_DIM / Math.max(vw, vh));
+    this.procW = Math.max(16, Math.round(vw * scale));
+    this.procH = Math.max(16, Math.round(vh * scale));
+
+    gl.bindTexture(gl.TEXTURE_2D, this.videoTex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, vw, vh, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+    let w = this.procW, h = this.procH;
+    while (Math.min(w, h) >= 8) {
+      this.g.push(this.target(w, h));
+      w = Math.max(1, Math.floor(w / 2));
+      h = Math.max(1, Math.floor(h / 2));
+    }
+    const L = this.g.length;
+    for (let i = 0; i < L; i++) {
+      this.lap.push(this.target(this.g[i].w, this.g[i].h));
+      this.collapse.push(this.target(this.g[i].w, this.g[i].h));
+      this.iir.push([this.pair(this.g[i].w, this.g[i].h), this.pair(this.g[i].w, this.g[i].h)]);
+      this.iirCur.push(0);
+    }
+    this.diff = this.target(this.procW, this.procH);
+    this.needsReset = true;
+  }
