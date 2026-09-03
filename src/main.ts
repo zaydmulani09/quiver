@@ -168,3 +168,37 @@ async function startSynthetic(bpm: number): Promise<void> {
 
 function bindUi(): void {
   startBtn.addEventListener('click', () => startCamera());
+  uploadBtn.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => {
+    const f = fileInput.files?.[0];
+    if (f) startFile(f);
+    fileInput.value = '';
+  });
+  stopBtn.addEventListener('click', stopAll);
+  flipBtn.addEventListener('click', async () => {
+    try {
+      const info = await source.flip();
+      if (magnifier) magnifier.mirror = info.facing === 'user';
+      resetSignal();
+      onSourceReady();
+    } catch (err) { toast(describeCameraError(err)); }
+  });
+
+  for (const chip of document.querySelectorAll<HTMLButtonElement>('.chip[data-mode]')) {
+    chip.addEventListener('click', () => applyMode(chip.dataset.mode as ModeName));
+  }
+  for (const seg of document.querySelectorAll<HTMLButtonElement>('.seg[data-view]')) {
+    seg.addEventListener('click', () => applyView(seg.dataset.view as ViewMode));
+  }
+  for (const seg of document.querySelectorAll<HTMLButtonElement>('.seg[data-kind]')) {
+    seg.addEventListener('click', () => {
+      for (const s of document.querySelectorAll<HTMLButtonElement>('.seg[data-kind]')) s.setAttribute('aria-pressed', String(s === seg));
+      magnifier?.setParams({ mode: seg.dataset.kind as 'color' | 'motion' });
+      syncAlphaRange();
+    });
+  }
+
+  alphaInput.addEventListener('input', () => {
+    const a = Number(alphaInput.value);
+    magnifier?.setParams({ alpha: a });
+    alphaOut.value = `×${a}`;
