@@ -134,3 +134,37 @@ function boot(): void {
   bindUi();
   sizeCanvas();
   requestAnimationFrame(tick);
+
+  if (import.meta.env.DEV) {
+    (window as unknown as { __quiver: unknown }).__quiver = { estimator, sampler, get magnifier() { return magnifier; }, get reading() { return lastReading; }, get coverage() { return coverage; }, get fps() { return fps; } };
+    if (params.has('synthetic')) startSynthetic(Number(params.get('synthetic')) || 72);
+  }
+}
+
+/** Dev-only: a canvas-generated "camera" with a known pulse so the pipeline can be tested headless. */
+async function startSynthetic(bpm: number): Promise<void> {
+  if (!magnifier) return;
+  const { createSyntheticStream } = await import('./dev/synthetic');
+  const { stream } = createSyntheticStream({ bpm });
+  setState('starting');
+  await source.startStream(stream, 'synthetic');
+  magnifier.mirror = false;
+  flipBtn.hidden = true;
+  onSourceReady();
+  setState('live');
+  // Occluded windows throttle rAF/rVFC to a few Hz; drive the pipeline from a timer instead.
+  cancelFrame();
+  usingRvfc = true; // keep the rAF pump out of the way
+  window.setInterval(() => {
+    if (state !== 'live') return;
+    if (video.currentTime !== lastPolledTime) { lastPolledTime = video.currentTime; processFrame(video.currentTime); }
+    magnifier?.render();
+    if (performance.now() - lastUpdate > 150) { lastUpdate = performance.now(); updateVitals(); }
+    waveform.draw();
+  }, 1000 / 60);
+}
+
+// ---------- UI wiring --------------------------------------------------------
+
+function bindUi(): void {
+  startBtn.addEventListener('click', () => startCamera());
