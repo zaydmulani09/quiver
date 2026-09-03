@@ -134,3 +134,37 @@
         </div>
         <canvas class="wave" id="wave" aria-label="Pulse waveform"></canvas>
         <div class="conf" aria-hidden="true"><div class="conf-bar" id="confBar"></div></div>
+        <p class="status" id="status">Start the camera to begin.</p>
+        <div class="vitals-actions">
+          <button class="btn small" id="shareCard" type="button" disabled>Share my heart rate</button>
+        </div>
+        <div class="tips" id="tips">
+          <p><strong>Pulse</strong> works best with your face in the oval, even light on your skin, holding still for about eight seconds.</p>
+        </div>
+      </aside>
+    </main>
+
+    <section class="how" id="how">
+      <div class="how-inner">
+        <h2>How it works</h2>
+        <p class="how-lede">Every frame from your camera goes through a real-time implementation of <em>Eulerian Video Magnification</em> (Wu, Rubinstein, Shih, Guttag, Durand &amp; Freeman — MIT CSAIL, SIGGRAPH 2012), rebuilt as a WebGL2 pipeline. There is no server. There is no model. It is signal processing on your GPU.</p>
+
+        <ol class="steps">
+          <li>
+            <span class="step-n">01</span>
+            <h3>Decompose</h3>
+            <p>Each frame is converted to YIQ and split into a Gaussian/Laplacian pyramid — a stack of blurrier and blurrier copies. Tiny changes that are invisible per-pixel become measurable once neighbouring pixels are pooled.</p>
+          </li>
+          <li>
+            <span class="step-n">02</span>
+            <h3>Filter in time</h3>
+            <p>Every pixel of every pyramid level runs through a temporal band-pass filter: two first-order IIR low-passes whose difference isolates just the frequencies you care about — 0.7–2.5 Hz for a pulse, 0.15–0.8 Hz for breathing. All of it in float textures, ping-ponged on the GPU.</p>
+          </li>
+          <li>
+            <span class="step-n">03</span>
+            <h3>Amplify &amp; collapse</h3>
+            <p>The band-passed signal is multiplied by α (up to ×150) — clipped per level using the paper's spatial-wavelength rule so motion doesn't tear — and added back onto the full-resolution frame. Blood volume changes the reflectance of skin by a fraction of a percent; ×60 makes it a visible flush.</p>
+          </li>
+          <li>
+            <span class="step-n">04</span>
+            <h3>Measure the pulse</h3>
