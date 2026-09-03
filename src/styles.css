@@ -318,3 +318,25 @@ input[type='range']::-moz-range-thumb { width: 15px; height: 15px; border-radius
   .stage { max-height: 70vh; }
 }
 @media (max-width: 640px) {
+  .top { padding: 14px 16px 6px; }
+  .pill { display: none; }
+  .app { padding: 6px 12px 16px; gap: 14px; }
+  .stage { border-radius: 14px; max-height: 66vh; }
+  .hero { padding: 22px; justify-content: flex-end; }
+  .hero h1 { font-size: clamp(34px, 11vw, 48px); }
+  .hero .lede { font-size: 14px; margin-bottom: 18px; }
+  .btn { padding: 11px 15px; font-size: 14px; }
+  .toolbar { gap: 10px; }
+  .chip kbd { display: none; }
+  .chip { padding: 8px 12px; font-size: 13px; }
+  .slider { flex-basis: 100%; max-width: none; }
+  .actions { margin-left: 0; width: 100%; justify-content: flex-end; }
+  .bpm { font-size: 72px; }
+  .how { padding: 44px 16px; }
+  .foot { padding: 16px; }
+  .foot-kbd { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand-dot { animation: none; }
+  .hero, .toolbar, .guide, .toast { transition: none; }
+}
