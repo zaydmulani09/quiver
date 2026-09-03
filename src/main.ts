@@ -236,3 +236,37 @@ function bindUi(): void {
   // Drag & drop a video onto the stage.
   stage.addEventListener('dragover', (e) => { e.preventDefault(); });
   stage.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const f = e.dataTransfer?.files?.[0];
+    if (f && f.type.startsWith('video/')) startFile(f); else if (f) toast('Drop a video file');
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    switch (e.key) {
+      case '1': applyMode('pulse'); break;
+      case '2': applyMode('breath'); break;
+      case '3': applyMode('vibration'); break;
+      case '4': applyMode('custom'); break;
+      case 'v': case 'V': applyView(view === 'magnified' ? 'compare' : view === 'compare' ? 'signal' : 'magnified'); break;
+      case 'r': case 'R': if (state === 'live') toggleRecord(); break;
+      case 's': case 'S': if (state === 'live') snapshot(); break;
+      case 'f': case 'F': if (state === 'live' && !flipBtn.hidden) flipBtn.click(); break;
+      case 'Escape': if (state === 'live') stopAll(); break;
+      case ' ': if (state === 'idle' && !startBtn.disabled) { e.preventDefault(); startCamera(); } break;
+      default: return;
+    }
+  });
+
+  window.addEventListener('resize', () => { sizeCanvas(); waveform.resize(); });
+  new ResizeObserver(() => sizeCanvas()).observe(stage);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) lastFrameTime = -1; });
+  window.addEventListener('pagehide', () => { if (recorder.recording) recorder.stop().catch(() => {}); });
+}
+
+function bindCustom(id: string, outId: string, fmt: (v: number) => string, toParams: (v: number) => Partial<MagnifierParams>): void {
+  const input = $<HTMLInputElement>(id);
+  const out = $<HTMLOutputElement>(outId);
+  const apply = () => {
+    const v = Number(input.value);
