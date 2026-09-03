@@ -406,3 +406,37 @@ function setState(next: AppState): void {
 function resetSignal(): void {
   estimator.reset();
   lastReading = null;
+  coverage = 0;
+  waveform.clear();
+  bpmEl.textContent = '--';
+  bpmEl.classList.add('locking');
+  confBar.style.width = '0%';
+  shareCardBtn.disabled = true;
+  guide.classList.remove('locked', 'faded');
+  statusEl.textContent = state === 'live' ? (mode === 'pulse' ? 'Looking for skin in the oval…' : 'Keep the camera still.') : 'Start the camera to begin.';
+}
+
+// ---------- frame loop -------------------------------------------------------
+
+function scheduleFrame(): void {
+  cancelFrame();
+  const v = video as HTMLVideoElement & { requestVideoFrameCallback?: (cb: (now: number, meta: { mediaTime: number }) => void) => number };
+  if (typeof v.requestVideoFrameCallback === 'function') {
+    usingRvfc = true;
+    rvfcHandle = v.requestVideoFrameCallback(onVideoFrame);
+  } else {
+    usingRvfc = false;
+  }
+}
+
+function cancelFrame(): void {
+  const v = video as HTMLVideoElement & { cancelVideoFrameCallback?: (h: number) => void };
+  if (usingRvfc && rvfcHandle && typeof v.cancelVideoFrameCallback === 'function') v.cancelVideoFrameCallback(rvfcHandle);
+  rvfcHandle = 0;
+}
+
+function onVideoFrame(_now: number, meta: { mediaTime: number }): void {
+  if (state !== 'live') return;
+  processFrame(meta.mediaTime);
+  rvfcHandle = (video as HTMLVideoElement & { requestVideoFrameCallback: (cb: (n: number, m: { mediaTime: number }) => void) => number }).requestVideoFrameCallback(onVideoFrame);
+}
