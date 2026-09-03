@@ -100,3 +100,37 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg>
             </button>
             <button class="ibtn" id="stop" type="button" title="Stop (Esc)" aria-label="Stop">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="custom" id="custom" hidden>
+          <label class="slider small"><span class="slider-label">Type</span>
+            <div class="views small" role="group" aria-label="Magnification type">
+              <button class="seg" data-kind="color" aria-pressed="true" type="button">Colour</button>
+              <button class="seg" data-kind="motion" aria-pressed="false" type="button">Motion</button>
+            </div>
+          </label>
+          <label class="slider small"><span class="slider-label">Low cut <output id="fLoOut">0.7 Hz</output></span><input id="fLo" type="range" min="0.05" max="6" step="0.05" value="0.7" /></label>
+          <label class="slider small"><span class="slider-label">High cut <output id="fHiOut">2.5 Hz</output></span><input id="fHi" type="range" min="0.1" max="14" step="0.1" value="2.5" /></label>
+          <label class="slider small"><span class="slider-label">Colour weight <output id="chromaOut">1.0</output></span><input id="chroma" type="range" min="0" max="1" step="0.05" value="1" /></label>
+          <label class="slider small"><span class="slider-label">Blur level <output id="levelOut">auto</output></span><input id="level" type="range" min="-1" max="6" step="1" value="-1" /></label>
+          <label class="slider small"><span class="slider-label">Detail λc <output id="lambdaOut">16 px</output></span><input id="lambda" type="range" min="4" max="200" step="1" value="16" /></label>
+        </div>
+      </section>
+
+      <aside class="vitals" id="vitals" aria-label="Vitals">
+        <div class="vitals-head">
+          <span class="vitals-title" id="vitalsTitle">Heart rate</span>
+          <span class="vitals-sub" id="vitalsSub">from skin colour, no contact</span>
+        </div>
+        <div class="bpm-row">
+          <span class="bpm" id="bpm" aria-live="polite">--</span>
+          <span class="bpm-unit">bpm</span>
+          <span class="heart" id="heart" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.2 3 4.5 6.6 4.5c2 0 3.5 1.1 4.4 2.5.9-1.4 2.4-2.5 4.4-2.5 3.6 0 5.7 3.7 4.2 7.3C19.5 16.4 12 21 12 21Z"/></svg>
+          </span>
+        </div>
+        <canvas class="wave" id="wave" aria-label="Pulse waveform"></canvas>
+        <div class="conf" aria-hidden="true"><div class="conf-bar" id="confBar"></div></div>
