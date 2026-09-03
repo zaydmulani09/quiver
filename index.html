@@ -168,3 +168,34 @@
           <li>
             <span class="step-n">04</span>
             <h3>Measure the pulse</h3>
+            <p>Separately, the mean colour of skin pixels in the oval is tracked over ten seconds and run through <em>POS</em> (Wang et al., 2017) — a projection that cancels lighting and specular changes — then a band-pass, a Hann window and a 2048-point FFT. The dominant peak is your heart rate; its signal-to-noise ratio is the confidence bar.</p>
+          </li>
+        </ol>
+
+        <div class="how-grid">
+          <div>
+            <h3>Privacy</h3>
+            <p>The page makes no network requests after it loads. Camera frames live in GPU memory and are overwritten thirty times a second. Recordings and snapshots are written straight to your downloads. Open the network tab and watch nothing happen.</p>
+          </div>
+          <div>
+            <h3>Not a medical device</h3>
+            <p>Remote photoplethysmography from a consumer webcam is typically within a few beats per minute of a chest strap in good light, and much worse in bad light, with motion, or with heavy makeup. It is a toy that happens to be real science. Don't make health decisions with it.</p>
+          </div>
+          <div>
+            <h3>Things to point it at</h3>
+            <p>Your own face (Pulse). A sleeping pet or a baby from across the room (Breathing). A washing machine, a speaker, a guitar string, a bridge you're standing on, a phone on a table with the fan running (Vibration). The camera itself must be still — prop the phone up.</p>
+          </div>
+        </div>
+
+        <p class="how-refs">References: <a href="https://people.csail.mit.edu/mrub/evm/" rel="noopener" target="_blank">Eulerian Video Magnification (MIT)</a> · <a href="https://ieeexplore.ieee.org/document/7565547" rel="noopener" target="_blank">Algorithmic principles of remote PPG (POS)</a> · Built with WebGL2, TypeScript and zero dependencies.</p>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span>quiver</span>
+      <span class="foot-kbd"><kbd>1–4</kbd> modes · <kbd>V</kbd> view · <kbd>R</kbd> record · <kbd>S</kbd> snapshot · <kbd>F</kbd> flip · <kbd>Esc</kbd> stop</span>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
