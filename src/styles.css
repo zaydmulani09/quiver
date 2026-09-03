@@ -202,3 +202,16 @@ kbd {
 }
 [data-state='live'] .hud { opacity: 1; }
 .hud-rec { display: inline-flex; align-items: center; gap: 7px; background: rgba(0, 0, 0, 0.55); padding: 5px 9px; border-radius: 8px; color: #fff; }
+.rec-dot { width: 8px; height: 8px; border-radius: 50%; background: #ff3b3b; animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0.25; } }
+.hud-hint { background: rgba(0, 0, 0, 0.55); padding: 5px 9px; border-radius: 8px; backdrop-filter: blur(6px); }
+.hud-hint:empty { display: none; }
+.hud-fps { margin-left: auto; color: rgba(255, 255, 255, 0.5); }
+
+.toast {
+  position: absolute; left: 50%; bottom: 16px; transform: translate(-50%, 8px);
+  background: rgba(20, 20, 22, 0.92); border: 1px solid var(--line-strong); color: var(--text);
+  padding: 9px 14px; border-radius: 10px; font-size: 13px; opacity: 0; pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s; max-width: 90%; text-align: center;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
