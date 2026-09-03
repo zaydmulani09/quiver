@@ -202,3 +202,37 @@ function bindUi(): void {
     const a = Number(alphaInput.value);
     magnifier?.setParams({ alpha: a });
     alphaOut.value = `×${a}`;
+    paintRange(alphaInput);
+  });
+
+  bindCustom('fLo', 'fLoOut', (v) => `${v.toFixed(2)} Hz`, (v) => ({ fLo: Math.min(v, (magnifier?.params.fHi ?? 10) - 0.05) }));
+  bindCustom('fHi', 'fHiOut', (v) => `${v.toFixed(1)} Hz`, (v) => ({ fHi: Math.max(v, (magnifier?.params.fLo ?? 0) + 0.05) }));
+  bindCustom('chroma', 'chromaOut', (v) => v.toFixed(2), (v) => ({ chromaAtt: v }));
+  bindCustom('level', 'levelOut', (v) => (v < 0 ? 'auto' : `L${v}`), (v) => ({ level: v }));
+  bindCustom('lambda', 'lambdaOut', (v) => `${v} px`, (v) => ({ lambdaC: v }));
+
+  recordBtn.addEventListener('click', toggleRecord);
+  snapBtn.addEventListener('click', snapshot);
+  shareCardBtn.addEventListener('click', shareCard);
+
+  // Compare slider: drag anywhere on the stage.
+  let dragging = false;
+  const setSplit = (clientX: number) => {
+    const r = stage.getBoundingClientRect();
+    const x = Math.min(0.98, Math.max(0.02, (clientX - r.left) / r.width));
+    if (magnifier) magnifier.split = x;
+    splitHandle.style.left = `${x * 100}%`;
+  };
+  stage.addEventListener('pointerdown', (e) => {
+    if (view !== 'compare' || state !== 'live') return;
+    dragging = true;
+    stage.setPointerCapture(e.pointerId);
+    setSplit(e.clientX);
+  });
+  stage.addEventListener('pointermove', (e) => { if (dragging) setSplit(e.clientX); });
+  stage.addEventListener('pointerup', () => { dragging = false; });
+  stage.addEventListener('pointercancel', () => { dragging = false; });
+
+  // Drag & drop a video onto the stage.
+  stage.addEventListener('dragover', (e) => { e.preventDefault(); });
+  stage.addEventListener('drop', (e) => {
