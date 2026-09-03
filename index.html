@@ -32,3 +32,37 @@
   <body>
     <a class="skip" href="#stage">Skip to the microscope</a>
     <header class="top">
+      <a class="brand" href="/" aria-label="quiver home"><span class="brand-dot" aria-hidden="true"></span>quiver</a>
+      <nav class="top-right">
+        <span class="pill" title="All processing happens in your browser. No frames, no numbers, nothing is sent anywhere."><span class="pill-dot" aria-hidden="true"></span>on-device · zero uploads</span>
+        <a class="link" href="#how">How it works</a>
+      </nav>
+    </header>
+
+    <main class="app" id="app" data-state="idle" data-mode="pulse">
+      <section class="stage-col">
+        <div class="stage" id="stage" tabindex="-1">
+          <video id="video" muted playsinline autoplay hidden></video>
+          <canvas id="out" aria-label="Magnified live video"></canvas>
+          <div class="guide" id="guide" aria-hidden="true"></div>
+          <div class="split-handle" id="splitHandle" aria-hidden="true"></div>
+
+          <div class="hero" id="hero">
+            <h1>Your webcam can <em>see</em> your heartbeat.</h1>
+            <p class="lede">quiver is a motion microscope. It amplifies the invisible colour and motion changes in live video ×60 in real time — blood pulsing through your face, a chest breathing across the room, a table trembling under a laptop fan.</p>
+            <div class="cta">
+              <button class="btn primary" id="start" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7a2 2 0 0 1 2-2h3l1.5-2h3L15 5h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="1.8"/></svg>
+                Start camera
+              </button>
+              <button class="btn ghost" id="upload" type="button">Use a video file</button>
+              <input id="file" type="file" accept="video/*" hidden />
+            </div>
+            <p class="fine">Nothing leaves your device. Best in even light, holding still for ~8 s. Not a medical device.</p>
+            <p class="err" id="heroErr" role="alert" hidden></p>
+          </div>
+
+          <div class="hud" id="hud" aria-live="polite">
+            <span class="hud-rec" id="hudRec" hidden><span class="rec-dot" aria-hidden="true"></span><span id="recTime">0.0s</span></span>
+            <span class="hud-hint" id="hudHint"></span>
+            <span class="hud-fps" id="hudFps" title="processing frame rate"></span>
