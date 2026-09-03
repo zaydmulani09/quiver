@@ -66,3 +66,37 @@
             <span class="hud-rec" id="hudRec" hidden><span class="rec-dot" aria-hidden="true"></span><span id="recTime">0.0s</span></span>
             <span class="hud-hint" id="hudHint"></span>
             <span class="hud-fps" id="hudFps" title="processing frame rate"></span>
+          </div>
+          <div class="toast" id="toast" role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="toolbar" id="toolbar">
+          <div class="modes" role="tablist" aria-label="What to amplify">
+            <button class="chip" role="tab" data-mode="pulse" aria-selected="true" type="button"><kbd>1</kbd>Pulse</button>
+            <button class="chip" role="tab" data-mode="breath" aria-selected="false" type="button"><kbd>2</kbd>Breathing</button>
+            <button class="chip" role="tab" data-mode="vibration" aria-selected="false" type="button"><kbd>3</kbd>Vibration</button>
+            <button class="chip" role="tab" data-mode="custom" aria-selected="false" type="button"><kbd>4</kbd>Custom</button>
+          </div>
+
+          <div class="views" role="group" aria-label="View">
+            <button class="seg" data-view="magnified" aria-pressed="true" type="button">Magnified</button>
+            <button class="seg" data-view="compare" aria-pressed="false" type="button">Compare</button>
+            <button class="seg" data-view="signal" aria-pressed="false" type="button">Signal</button>
+          </div>
+
+          <label class="slider">
+            <span class="slider-label">Amplify <output id="alphaOut">×60</output></span>
+            <input id="alpha" type="range" min="0" max="150" step="1" value="60" aria-label="Amplification" />
+          </label>
+
+          <div class="actions">
+            <button class="ibtn" id="flip" type="button" title="Switch camera (F)" aria-label="Switch camera" hidden>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.7-5.7M20 12a8 8 0 0 1-13.7 5.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M17 3v4h-4M7 21v-4h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="ibtn" id="snap" type="button" title="Save a snapshot (S)" aria-label="Save a snapshot">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="m3 16 5-5 4 4 3-3 6 6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="16" cy="9" r="1.5" fill="currentColor"/></svg>
+            </button>
+            <button class="ibtn rec" id="record" type="button" title="Record a clip (R)" aria-label="Record a clip">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg>
+            </button>
+            <button class="ibtn" id="stop" type="button" title="Stop (Esc)" aria-label="Stop">
