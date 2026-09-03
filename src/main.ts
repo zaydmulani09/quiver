@@ -100,3 +100,37 @@ const recorder = new CanvasRecorder(canvas, 15);
 let roi: Roi = SkinSampler.defaultRoi(640, 480);
 let lastReading: HeartRateReading | null = null;
 let coverage = 0;
+let fps = 0;
+let lastFrameTime = -1;
+let lastUpdate = 0;
+let rvfcHandle = 0;
+let usingRvfc = false;
+let toastTimer = 0;
+
+// ---------- boot -------------------------------------------------------------
+
+function boot(): void {
+  try {
+    magnifier = new Magnifier(canvas);
+  } catch (err) {
+    showHeroError(`This browser can't run quiver: ${(err as Error).message}. Try a recent Chrome, Edge, Firefox or Safari.`);
+    startBtn.disabled = true;
+    uploadBtn.disabled = true;
+    return;
+  }
+  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); toast('Graphics context lost — restarting'); });
+  canvas.addEventListener('webglcontextrestored', () => { magnifier = new Magnifier(canvas); applyMode(mode); applyView(view); });
+
+  if (!VideoSource.supported) {
+    startBtn.disabled = true;
+    showHeroError('Camera access is not available here (this needs HTTPS or localhost). You can still load a video file.');
+  }
+
+  const params = new URLSearchParams(location.search);
+  const m = params.get('mode');
+  if (m && m in PRESETS) mode = m as ModeName;
+  applyMode(mode);
+  applyView('magnified');
+  bindUi();
+  sizeCanvas();
+  requestAnimationFrame(tick);
