@@ -474,3 +474,37 @@ function tick(now: number): void {
       updateVitals();
       const { w, h } = magnifier?.processingSize ?? { w: 0, h: 0 };
       hudFps.textContent = fps > 0 ? `${fps.toFixed(0)} fps · ${w}×${h}` : '';
+      if (recorder.recording) recTime.textContent = `${recorder.elapsed.toFixed(1)}s`;
+    }
+  }
+  waveform.draw();
+}
+
+function updateVitals(): void {
+  if (mode !== 'pulse') {
+    statusEl.textContent = 'Keep the camera perfectly still. Amplifying motion in band.';
+    return;
+  }
+  if (coverage < 0.12) {
+    statusEl.textContent = 'Put your face inside the oval, with light on your skin.';
+    guide.classList.remove('locked', 'faded');
+    return;
+  }
+  const r = estimator.update();
+  lastReading = r;
+  if (r.waveform.length) waveform.set(r.waveform);
+  confBar.style.width = `${Math.round(r.confidence * 100)}%`;
+  if (r.beat) {
+    waveform.beat();
+    heartEl.classList.add('pop');
+    bpmEl.classList.add('pop');
+    setTimeout(() => { heartEl.classList.remove('pop'); bpmEl.classList.remove('pop'); }, 140);
+  }
+  // Once the pulse is locked, narrow the magnifier's temporal band around it so the visible
+  // flush gets cleaner (less in-band noise) the longer you hold still.
+  if (magnifier) {
+    const base = PRESETS.pulse.params;
+    if (r.bpm !== null && r.confidence >= 0.5) {
+      const f = r.bpm / 60;
+      magnifier.setParams({ fLo: Math.max(base.fLo!, f - 0.35), fHi: Math.min(base.fHi!, f + 0.35) });
+    } else {
