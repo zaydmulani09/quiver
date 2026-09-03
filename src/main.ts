@@ -542,3 +542,36 @@ async function toggleRecord(): Promise<void> {
     } catch (err) { toast(`Could not save the clip: ${(err as Error).message}`); }
     return;
   }
+  recorder.start(() => { toggleRecord(); });
+  recordBtn.classList.add('on');
+  hudRec.hidden = false;
+  recTime.textContent = '0.0s';
+}
+
+function snapshot(): void {
+  magnifier?.render();
+  canvas.toBlob(async (blob) => {
+    if (!blob) { toast('Snapshot failed'); return; }
+    const result = await deliverFile(blob, `quiver-${mode}-${stamp()}.png`, 'quiver snapshot');
+    toast(result === 'shared' ? 'Snapshot shared' : 'Snapshot saved');
+  }, 'image/png');
+}
+
+async function shareCard(): Promise<void> {
+  if (!lastReading || lastReading.bpm === null) return;
+  try {
+    const blob = await renderShareCard(lastReading.bpm, lastReading.waveform, location.host || 'quiver.vercel.app');
+    const result = await deliverFile(blob, `my-heart-rate-${Math.round(lastReading.bpm)}bpm.png`, `${Math.round(lastReading.bpm)} bpm, measured by a webcam`);
+    toast(result === 'shared' ? 'Card shared' : 'Card saved to your downloads');
+  } catch (err) { toast(`Could not make the card: ${(err as Error).message}`); }
+}
+
+// ---------- helpers ----------------------------------------------------------
+
+function sizeCanvas(): void {
+  const rect = stage.getBoundingClientRect();
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = Math.min(1920, Math.max(2, Math.round(rect.width * dpr)));
+  const h = Math.min(1920, Math.max(2, Math.round(rect.height * dpr)));
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+}
