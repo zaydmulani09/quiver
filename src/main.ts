@@ -371,3 +371,38 @@ async function startFile(file: File): Promise<void> {
     showHeroError((err as Error).message || 'Could not play that file.');
   }
 }
+
+function onSourceReady(): void {
+  const vw = video.videoWidth || 640, vh = video.videoHeight || 480;
+  stage.style.setProperty('--stage-ar', `${vw} / ${vh}`);
+  roi = SkinSampler.defaultRoi(vw, vh);
+  guide.style.setProperty('--guide-w', `${roi.rx * 200}%`);
+  guide.style.setProperty('--guide-h', `${roi.ry * 200}%`);
+  guide.style.top = `${roi.cy * 100}%`;
+  sizeCanvas();
+  resetSignal();
+  lastFrameTime = -1;
+  magnifier?.reset();
+  scheduleFrame();
+}
+
+function stopAll(): void {
+  if (recorder.recording) recorder.stop().catch(() => {});
+  cancelFrame();
+  source.stop();
+  setState('idle');
+  resetSignal();
+  hudFps.textContent = '';
+}
+
+function setState(next: AppState): void {
+  state = next;
+  app.dataset.state = state;
+  startBtn.disabled = state === 'starting' || !VideoSource.supported;
+  startBtn.textContent = state === 'starting' ? 'Starting…' : 'Start camera';
+  if (state !== 'live') { recordBtn.classList.remove('on'); hudRec.hidden = true; }
+}
+
+function resetSignal(): void {
+  estimator.reset();
+  lastReading = null;
