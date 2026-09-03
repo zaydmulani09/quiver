@@ -440,3 +440,37 @@ function onVideoFrame(_now: number, meta: { mediaTime: number }): void {
   processFrame(meta.mediaTime);
   rvfcHandle = (video as HTMLVideoElement & { requestVideoFrameCallback: (cb: (n: number, m: { mediaTime: number }) => void) => number }).requestVideoFrameCallback(onVideoFrame);
 }
+
+let lastPolledTime = -1;
+function processFrame(mediaTime: number): void {
+  if (!magnifier || video.readyState < 2) return;
+  const dt = lastFrameTime < 0 ? 1 / 30 : mediaTime - lastFrameTime;
+  if (dt <= 0) return;
+  lastFrameTime = mediaTime;
+  fps += ((1 / Math.max(dt, 1 / 120)) - fps) * 0.1;
+
+  magnifier.process(video, dt);
+
+  if (mode === 'pulse') {
+    const s = sampler.sample(video, roi);
+    if (s) {
+      coverage += (s.coverage - coverage) * 0.2;
+      if (s.coverage > 0.12) estimator.push(mediaTime, s.r, s.g, s.b);
+    }
+  }
+}
+
+function tick(now: number): void {
+  requestAnimationFrame(tick);
+  if (state === 'live') {
+    // Fallback frame pump for browsers without requestVideoFrameCallback.
+    if (!usingRvfc && video.currentTime !== lastPolledTime) {
+      lastPolledTime = video.currentTime;
+      processFrame(video.currentTime);
+    }
+    magnifier?.render();
+    if (now - lastUpdate > 150) {
+      lastUpdate = now;
+      updateVitals();
+      const { w, h } = magnifier?.processingSize ?? { w: 0, h: 0 };
+      hudFps.textContent = fps > 0 ? `${fps.toFixed(0)} fps · ${w}×${h}` : '';
