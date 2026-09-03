@@ -304,3 +304,36 @@ function applyMode(next: ModeName): void {
   resetSignal();
   waveform.color = getComputedStyle(app).getPropertyValue('--accent').trim() || '#ff4d4d';
   const url = new URL(location.href);
+  if (mode === 'pulse') url.searchParams.delete('mode'); else url.searchParams.set('mode', mode);
+  history.replaceState(null, '', url.pathname + (url.search || ''));
+}
+
+function syncAlphaRange(): void {
+  const preset = PRESETS[mode];
+  const p = magnifier?.params ?? DEFAULT_PARAMS;
+  const max = mode === 'custom' ? (p.mode === 'motion' ? 60 : 150) : preset.alphaMax;
+  alphaInput.max = String(max);
+  alphaInput.value = String(Math.min(p.alpha, max));
+  alphaOut.value = `×${alphaInput.value}`;
+  paintRange(alphaInput);
+}
+
+function syncCustomInputs(): void {
+  const p = magnifier?.params ?? DEFAULT_PARAMS;
+  const set = (id: string, v: number) => { const el = $<HTMLInputElement>(id); el.value = String(v); el.dispatchEvent(new Event('input')); };
+  for (const s of document.querySelectorAll<HTMLButtonElement>('.seg[data-kind]')) s.setAttribute('aria-pressed', String(s.dataset.kind === p.mode));
+  set('fLo', p.fLo); set('fHi', p.fHi); set('chroma', p.chromaAtt); set('level', p.level); set('lambda', p.lambdaC);
+}
+
+function applyView(next: ViewMode): void {
+  view = next;
+  app.dataset.view = view;
+  if (magnifier) magnifier.view = view;
+  for (const seg of document.querySelectorAll<HTMLButtonElement>('.seg[data-view]')) seg.setAttribute('aria-pressed', String(seg.dataset.view === view));
+  if (view === 'compare') {
+    splitHandle.classList.add('labels');
+    splitHandle.style.left = `${(magnifier?.split ?? 0.5) * 100}%`;
+  }
+}
+
+// ---------- sources ----------------------------------------------------------
