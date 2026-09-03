@@ -270,3 +270,37 @@ function bindCustom(id: string, outId: string, fmt: (v: number) => string, toPar
   const out = $<HTMLOutputElement>(outId);
   const apply = () => {
     const v = Number(input.value);
+    magnifier?.setParams(toParams(v));
+    out.value = fmt(v);
+    paintRange(input);
+  };
+  input.addEventListener('input', apply);
+  paintRange(input);
+}
+
+function paintRange(input: HTMLInputElement): void {
+  const min = Number(input.min), max = Number(input.max), v = Number(input.value);
+  input.style.setProperty('--fill', `${((v - min) / (max - min)) * 100}%`);
+}
+
+// ---------- modes & views ----------------------------------------------------
+
+function applyMode(next: ModeName): void {
+  mode = next;
+  const preset = PRESETS[mode];
+  app.dataset.mode = mode;
+  for (const chip of document.querySelectorAll<HTMLButtonElement>('.chip[data-mode]')) chip.setAttribute('aria-selected', String(chip.dataset.mode === mode));
+  customPanel.hidden = mode !== 'custom';
+  hudHint.textContent = preset.hint;
+  tipsEl.innerHTML = preset.tips;
+  vitalsTitle.textContent = preset.title;
+  vitalsSub.textContent = preset.sub;
+  if (magnifier) {
+    magnifier.setParams(preset.params);
+    magnifier.reset();
+  }
+  syncAlphaRange();
+  syncCustomInputs();
+  resetSignal();
+  waveform.color = getComputedStyle(app).getPropertyValue('--accent').trim() || '#ff4d4d';
+  const url = new URL(location.href);
