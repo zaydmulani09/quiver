@@ -508,3 +508,37 @@ function updateVitals(): void {
       const f = r.bpm / 60;
       magnifier.setParams({ fLo: Math.max(base.fLo!, f - 0.35), fHi: Math.min(base.fHi!, f + 0.35) });
     } else {
+      magnifier.setParams({ fLo: base.fLo!, fHi: base.fHi! });
+    }
+  }
+  if (r.bpm !== null) {
+    bpmEl.textContent = String(Math.round(r.bpm));
+    bpmEl.classList.toggle('locking', r.confidence < 0.4);
+    shareCardBtn.disabled = r.confidence < 0.4;
+    guide.classList.toggle('locked', r.confidence >= 0.4);
+    guide.classList.toggle('faded', r.confidence >= 0.4);
+    statusEl.textContent = r.confidence >= 0.7 ? 'Locked. That is your pulse.' : r.confidence >= 0.4 ? 'Locked — hold still to sharpen it.' : 'Locking on… hold still.';
+  } else {
+    bpmEl.textContent = '--';
+    bpmEl.classList.add('locking');
+    shareCardBtn.disabled = true;
+    guide.classList.remove('locked', 'faded');
+    const secs = Math.max(0, 8 - r.seconds);
+    statusEl.textContent = r.seconds < 8 ? `Reading… ${secs.toFixed(0)}s. Hold still, face the light.` : 'Weak signal. Move closer, add light, hold still.';
+  }
+}
+
+// ---------- sharing ----------------------------------------------------------
+
+async function toggleRecord(): Promise<void> {
+  if (!CanvasRecorder.supported) { toast('Recording is not supported in this browser'); return; }
+  if (recorder.recording) {
+    recordBtn.classList.remove('on');
+    hudRec.hidden = true;
+    try {
+      const { blob, ext } = await recorder.stop();
+      const result = await deliverFile(blob, `quiver-${mode}-${stamp()}.${ext}`, 'quiver clip');
+      toast(result === 'shared' ? 'Clip shared' : 'Clip saved to your downloads');
+    } catch (err) { toast(`Could not save the clip: ${(err as Error).message}`); }
+    return;
+  }
