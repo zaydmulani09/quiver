@@ -337,3 +337,37 @@ function applyView(next: ViewMode): void {
 }
 
 // ---------- sources ----------------------------------------------------------
+
+async function startCamera(): Promise<void> {
+  if (state !== 'idle' || !magnifier) return;
+  setState('starting');
+  heroErr.hidden = true;
+  try {
+    const info = await source.startCamera('user');
+    magnifier.mirror = info.facing === 'user';
+    flipBtn.hidden = !info.canFlip;
+    onSourceReady();
+    setState('live');
+    stage.focus({ preventScroll: true });
+  } catch (err) {
+    setState('idle');
+    showHeroError(describeCameraError(err));
+  }
+}
+
+async function startFile(file: File): Promise<void> {
+  if (!magnifier) return;
+  setState('starting');
+  heroErr.hidden = true;
+  try {
+    await source.loadFile(file);
+    magnifier.mirror = false;
+    flipBtn.hidden = true;
+    onSourceReady();
+    setState('live');
+    toast(`Playing ${file.name} on loop`);
+  } catch (err) {
+    setState('idle');
+    showHeroError((err as Error).message || 'Could not play that file.');
+  }
+}
