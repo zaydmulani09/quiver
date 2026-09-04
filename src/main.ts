@@ -610,3 +610,9 @@ function describeCameraError(err: unknown): string {
       return 'Camera access needs a secure (HTTPS) page.';
     default:
       return `Could not start the camera${e?.message ? `: ${e.message}` : ''}.`;
+  }
+}
+
+hero.addEventListener('transitionend', () => { /* keep hero out of the tab order when hidden */ hero.inert = state === 'live'; });
+
+boot();
