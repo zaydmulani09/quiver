@@ -66,3 +66,14 @@ export function createSyntheticStream(opts: SyntheticOptions = {}): { stream: Me
     // Vibrating wire on the right.
     const vx = 560 + Math.sin(2 * Math.PI * vib * t) * 0.35;
     ctx.strokeStyle = '#d8d8d8';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(vx, 40); ctx.lineTo(vx, 440); ctx.stroke();
+
+  };
+  // A timer rather than requestAnimationFrame so the scene keeps running at full rate even
+  // when the tab is occluded (headless / background testing).
+  timer = window.setInterval(draw, 1000 / fps);
+  draw();
+  const stream = canvas.captureStream(fps);
+  return { stream, stop: () => { clearInterval(timer); for (const tr of stream.getTracks()) tr.stop(); } };
+}
