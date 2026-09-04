@@ -53,6 +53,7 @@ export class Magnifier {
   private iirCur: number[] = [];   // which ping is current per level
   private collapse: Target[] = []; // per level collapse targets (motion)
   private diff: Target | null = null;
+  private probe: { tex: WebGLTexture; fbo: WebGLFramebuffer; w: number; h: number; buf: Uint8Array } | null = null;
   private needsReset = true;
 
   params: MagnifierParams = { ...DEFAULT_PARAMS };
