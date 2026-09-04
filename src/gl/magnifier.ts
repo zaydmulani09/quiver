@@ -71,7 +71,7 @@ export class Magnifier {
     const halfExt = gl.getExtension('EXT_color_buffer_half_float');
     if (!floatExt && !halfExt) throw new Error('Float render targets are not supported');
 
-    for (const [name, frag] of Object.entries({ toYiq: FRAG_TO_YIQ, down: FRAG_DOWN, lap: FRAG_LAPLACIAN, iir: FRAG_IIR, collapse: FRAG_COLLAPSE, colorBand: FRAG_COLOR_BAND, display: FRAG_DISPLAY })) {
+    for (const [name, frag] of Object.entries({ toYiq: FRAG_TO_YIQ, down: FRAG_DOWN, lap: FRAG_LAPLACIAN, iir: FRAG_IIR, collapse: FRAG_COLLAPSE, colorBand: FRAG_COLOR_BAND, display: FRAG_DISPLAY, energy: FRAG_ENERGY })) {
       const { prog, uniforms } = this.link(VERT, frag);
       this.programs.set(name, prog);
       this.uniforms.set(name, uniforms);
