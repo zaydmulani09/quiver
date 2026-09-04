@@ -26,6 +26,7 @@ function assetSaver(): Plugin {
 }
 
 export default defineConfig({
+  plugins: [assetSaver()],
   build: {
     target: 'es2022',
     sourcemap: true,
