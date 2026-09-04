@@ -575,3 +575,38 @@ function sizeCanvas(): void {
   const h = Math.min(1920, Math.max(2, Math.round(rect.height * dpr)));
   if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
 }
+
+function stamp(): string {
+  const d = new Date();
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
+}
+
+function toast(msg: string): void {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => toastEl.classList.remove('show'), 2600);
+}
+
+function showHeroError(msg: string): void {
+  heroErr.textContent = msg;
+  heroErr.hidden = false;
+}
+
+function describeCameraError(err: unknown): string {
+  const e = err as DOMException;
+  switch (e?.name) {
+    case 'NotAllowedError':
+    case 'PermissionDeniedError':
+      return 'Camera access was blocked. Allow the camera in your browser\'s site settings and try again — or load a video file instead.';
+    case 'NotFoundError':
+    case 'DevicesNotFoundError':
+      return 'No camera was found on this device. You can still load a video file.';
+    case 'NotReadableError':
+    case 'TrackStartError':
+      return 'The camera is busy in another app. Close it and try again.';
+    case 'SecurityError':
+      return 'Camera access needs a secure (HTTPS) page.';
+    default:
+      return `Could not start the camera${e?.message ? `: ${e.message}` : ''}.`;
