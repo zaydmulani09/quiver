@@ -66,3 +66,37 @@
       // face oval + pulse trace on the right
       ctx.save();
       ctx.translate(900, 300);
+      ctx.strokeStyle = 'rgba(255,77,77,0.9)'; ctx.lineWidth = 3; ctx.setLineDash([12, 10]);
+      ctx.beginPath(); ctx.ellipse(0, 0, 150, 200, 0, 0, Math.PI * 2); ctx.stroke();
+      ctx.setLineDash([]);
+      const flush = ctx.createRadialGradient(0, -20, 10, 0, -20, 190);
+      flush.addColorStop(0, 'rgba(255,77,77,0.55)'); flush.addColorStop(0.6, 'rgba(255,77,77,0.18)'); flush.addColorStop(1, 'rgba(255,77,77,0)');
+      ctx.fillStyle = flush; ctx.beginPath(); ctx.ellipse(0, 0, 150, 200, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+
+      // waveform along the bottom right
+      const x0 = 700, x1 = 1130, ym = 545, amp = 34;
+      const path = new Path2D();
+      const n = 300;
+      for (let i = 0; i < n; i++) {
+        const t = i / n * 3.2; // seconds at 72 bpm
+        const ph = (t * 1.2) % 1;
+        let v = Math.exp(-((ph - 0.18) ** 2) / 0.004) * 1.0 + Math.exp(-((ph - 0.42) ** 2) / 0.02) * 0.35 - 0.12;
+        const x = x0 + (i / (n - 1)) * (x1 - x0), y = ym - v * amp;
+        if (i === 0) path.moveTo(x, y); else path.lineTo(x, y);
+      }
+      ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      ctx.strokeStyle = 'rgba(255,77,77,0.3)'; ctx.lineWidth = 12; ctx.stroke(path);
+      ctx.strokeStyle = '#ff4d4d'; ctx.lineWidth = 3.5; ctx.stroke(path);
+      ctx.font = '500 56px "Geist Mono"'; ctx.fillStyle = '#ffffff'; ctx.textAlign = 'right';
+      ctx.fillText('72', 1130, 470);
+      ctx.font = '400 20px "Geist"'; ctx.fillStyle = '#8a8a93';
+      ctx.fillText('bpm', 1130, 496);
+      ctx.textAlign = 'left';
+
+      const blob = await new Promise((r) => c.toBlob(r, 'image/png'));
+      const res = await fetch('/__save?name=og.png', { method: 'POST', body: blob });
+      log(await res.text());
+    }
+
+    // ---------- apple touch icon ----------
