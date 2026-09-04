@@ -100,3 +100,17 @@
     }
 
     // ---------- apple touch icon ----------
+    {
+      const c = document.getElementById('icon');
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#0b0b0c'; ctx.beginPath(); ctx.roundRect(0, 0, 180, 180, 40); ctx.fill();
+      ctx.strokeStyle = '#ff4d4d'; ctx.lineWidth = 11; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      const pts = [[22, 96], [48, 96], [60, 68], [76, 124], [93, 46], [110, 130], [124, 96], [158, 96]];
+      ctx.beginPath(); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.stroke();
+      const blob = await new Promise((r) => c.toBlob(r, 'image/png'));
+      const res = await fetch('/__save?name=apple-touch-icon.png', { method: 'POST', body: blob });
+      log(await res.text());
+    }
+  </script>
+</body>
+</html>
