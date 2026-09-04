@@ -66,3 +66,23 @@ src/
   capture/skin.ts      skin-pixel colour sampler
   capture/recorder.ts  MediaRecorder + share/download
   ui/waveform.ts       pulse trace
+  ui/card.ts           share card renderer
+  main.ts              app
+tests/dsp.test.ts      vitest
+```
+
+Zero runtime dependencies. ~16 KB of JavaScript gzipped.
+
+## Honest limits
+
+- Remote PPG from a consumer webcam is typically within a few bpm of a chest strap in good, even light, and much worse in dim light, with head motion, with heavy makeup, or on very dark skin (less light gets back out). It is a toy that happens to be real science. Not a medical device.
+- Motion modes amplify *any* motion in band, including camera shake. Put the phone down.
+- At 30 fps anything above ~14 Hz aliases; fast vibration still shows, just not at its true frequency.
+
+## References
+
+- Wu, Rubinstein, Shih, Guttag, Durand, Freeman. *Eulerian Video Magnification for Revealing Subtle Changes in the World.* SIGGRAPH 2012. https://people.csail.mit.edu/mrub/evm/
+- Wang, den Brinker, Stuijk, de Haan. *Algorithmic Principles of Remote PPG.* IEEE TBME 2017.
+- Chai, Ngan. *Face segmentation using skin-color map in videophone applications.* 1999 (the YCbCr skin box).
+
+MIT licence.
