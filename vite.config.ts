@@ -1,4 +1,6 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
+import { writeFileSync, mkdirSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 export default defineConfig({
   build: {
