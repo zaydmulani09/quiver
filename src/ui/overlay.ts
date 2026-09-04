@@ -66,3 +66,34 @@ export class Overlay {
       ctx.fillStyle = '#fff';
       ctx.font = `500 ${64 * u}px "Geist Mono", ui-monospace, monospace`;
       const num = String(Math.round(s.bpm));
+      ctx.fillText(num, pad, H - pad - 18 * u);
+      const numW = ctx.measureText(num).width;
+      ctx.fillStyle = 'rgba(255,255,255,0.75)';
+      ctx.font = `400 ${18 * u}px "Geist", system-ui, sans-serif`;
+      ctx.fillText('bpm', pad + numW + 10 * u, H - pad - 18 * u);
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.font = `500 ${11.5 * u}px "Geist Mono", ui-monospace, monospace`;
+      ctx.fillText(tag, pad, H - pad);
+
+      const n = s.waveform.length;
+      if (n > 1) {
+        const x0 = pad + numW + 70 * u, x1 = Math.min(W * 0.55, x0 + 260 * u);
+        const ym = H - pad - 40 * u, amp = 20 * u;
+        if (x1 - x0 > 60 * u) {
+          const path = new Path2D();
+          for (let i = 0; i < n; i++) {
+            const x = x0 + (i / (n - 1)) * (x1 - x0);
+            const y = ym - Math.max(-1.6, Math.min(1.6, s.waveform[i])) * amp;
+            if (i === 0) path.moveTo(x, y); else path.lineTo(x, y);
+          }
+          ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+          ctx.strokeStyle = s.accent;
+          ctx.globalAlpha = 0.35; ctx.lineWidth = 6 * u; ctx.stroke(path);
+          ctx.globalAlpha = 1; ctx.lineWidth = 2 * u; ctx.stroke(path);
+        }
+      }
+    } else {
+      ctx.fillText(tag, pad, H - pad);
+    }
+  }
+}
