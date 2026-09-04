@@ -32,3 +32,37 @@
       const W = 1200, H = 630;
       ctx.fillStyle = '#0b0b0c'; ctx.fillRect(0, 0, W, H);
       // warm glow behind the face
+      const glow = ctx.createRadialGradient(900, 300, 30, 900, 300, 420);
+      glow.addColorStop(0, 'rgba(255,77,77,0.30)'); glow.addColorStop(1, 'rgba(255,77,77,0)');
+      ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+
+      // wordmark
+      ctx.fillStyle = '#ff4d4d'; ctx.beginPath(); ctx.arc(80, 84, 8, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ededed'; ctx.font = '400 46px "Instrument Serif"'; ctx.textBaseline = 'middle';
+      ctx.fillText('quiver', 102, 84);
+
+      // headline
+      ctx.textBaseline = 'alphabetic';
+      ctx.font = '400 92px "Instrument Serif"';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('Your webcam', 76, 250);
+      ctx.fillText('can', 76, 342);
+      const canW = ctx.measureText('can ').width;
+      ctx.font = 'italic 400 92px "Instrument Serif"';
+      ctx.fillStyle = '#ff4d4d';
+      ctx.fillText('see', 76 + canW, 342);
+      const seeW = ctx.measureText('see ').width;
+      ctx.font = '400 92px "Instrument Serif"';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('your', 76 + canW + seeW, 342);
+      ctx.fillText('heartbeat.', 76, 434);
+
+      // sub
+      ctx.font = '400 28px "Geist"'; ctx.fillStyle = '#b9b9c0';
+      ctx.fillText('A motion microscope in your browser.', 78, 500);
+      ctx.font = '500 20px "Geist Mono"'; ctx.fillStyle = '#8a8a93';
+      ctx.fillText('REAL-TIME  ·  ON-DEVICE  ·  ZERO UPLOADS', 78, 548);
+
+      // face oval + pulse trace on the right
+      ctx.save();
+      ctx.translate(900, 300);
