@@ -201,6 +201,40 @@ export class Magnifier {
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 
+  /**
+   * Mean and peak amplified-band energy over the frame (luma, 0..1 scale where 1 ≈ a 25 % swing).
+   * Renders |diff| into a tiny RGBA8 target and reads it back — cheap enough to call a few times a second.
+   */
+  energy(): { mean: number; peak: number } {
+    const gl = this.gl;
+    if (!this.diff) return { mean: 0, peak: 0 };
+    if (!this.probe) {
+      const w = 32, h = 24;
+      const tex = gl.createTexture()!;
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      const fbo = gl.createFramebuffer()!;
+      gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+      this.probe = { tex, fbo, w, h, buf: new Uint8Array(w * h * 4) };
+    }
+    const p = this.probe;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, p.fbo);
+    gl.viewport(0, 0, p.w, p.h);
+    gl.bindVertexArray(this.vao);
+    const u = this.use('energy');
+    this.bindTex('u_diff', this.diff.tex, 0);
+    gl.uniform1f(u.get('u_scale')!, 4);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.readPixels(0, 0, p.w, p.h, gl.RGBA, gl.UNSIGNED_BYTE, p.buf);
+    let sum = 0, peak = 0;
+    for (let i = 0; i < p.buf.length; i += 4) { const v = p.buf[i]; sum += v; if (v > peak) peak = v; }
+    return { mean: sum / (p.w * p.h) / 255, peak: peak / 255 };
+  }
   /** The pyramid level used in colour mode. */
   colorLevel(): number {
     if (this.params.level >= 0) return Math.min(this.params.level, this.g.length - 1);
