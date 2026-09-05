@@ -1,6 +1,12 @@
 export interface Roi { cx: number; cy: number; rx: number; ry: number } // normalised video coords
 
-export interface SkinSample { r: number; g: number; b: number; coverage: number }
+export interface SkinSample {
+  r: number; g: number; b: number;
+  /** Fraction of the ellipse classified as skin. */
+  coverage: number;
+  /** Mean of everything inside the ellipse (fallback when the skin box misses a complexion). */
+  all: { r: number; g: number; b: number };
+}
 
 /**
  * Averages the colour of skin pixels inside an elliptical region of the raw video frame.
