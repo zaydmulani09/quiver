@@ -312,6 +312,7 @@ export class Magnifier {
     this.g.forEach(kill); this.lap.forEach(kill); this.collapse.forEach(kill);
     for (const pr of this.iir) for (const p of pr) { gl.deleteTexture(p.a); gl.deleteTexture(p.b); gl.deleteFramebuffer(p.fbo); }
     if (this.diff) kill(this.diff);
+    if (this.probe) { gl.deleteTexture(this.probe.tex); gl.deleteFramebuffer(this.probe.fbo); this.probe = null; }
     this.g = []; this.lap = []; this.collapse = []; this.iir = []; this.iirCur = []; this.diff = null;
     if (all) {
       gl.deleteTexture(this.videoTex);
