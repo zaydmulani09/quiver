@@ -149,6 +149,18 @@ void main() {
   o = vec4(band * u_gain, 1.0);
 }`;
 
+/** Motion energy probe: |diff luma| packed into 8 bits so it can be read back anywhere. */
+export const FRAG_ENERGY = `#version 300 es
+precision highp float;
+uniform sampler2D u_diff;
+uniform float u_scale;
+in vec2 v_uv;
+out vec4 o;
+void main() {
+  float e = abs(texture(u_diff, v_uv).x) * u_scale;
+  o = vec4(clamp(e, 0.0, 1.0), 0.0, 0.0, 1.0);
+}`;
+
 /**
  * Final composite onto the visible canvas. Adds the amplified band to the *full-resolution*
  * video (so sharpness is preserved even though processing ran at a lower resolution),
