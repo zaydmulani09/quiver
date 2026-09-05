@@ -170,6 +170,7 @@ async function startSynthetic(bpm: number): Promise<void> {
     if (state !== 'live') return;
     if (video.currentTime !== lastPolledTime) { lastPolledTime = video.currentTime; processFrame(video.currentTime); }
     magnifier?.render();
+    if (recorder.recording) overlay.draw(canvas, overlayState());
     if (performance.now() - lastUpdate > 150) { lastUpdate = performance.now(); updateVitals(); }
     waveform.draw();
   }, 1000 / 60);
