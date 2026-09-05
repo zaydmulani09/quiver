@@ -43,7 +43,7 @@
     <main class="app" id="app" data-state="idle" data-mode="pulse">
       <section class="stage-col">
         <div class="stage" id="stage" tabindex="-1">
-          <video id="video" muted playsinline autoplay hidden></video>
+          <video id="video" class="src-video" muted playsinline autoplay aria-hidden="true" tabindex="-1"></video>
           <canvas id="out" aria-label="Magnified live video"></canvas>
           <div class="guide" id="guide" aria-hidden="true"></div>
           <div class="split-handle" id="splitHandle" aria-hidden="true"></div>
