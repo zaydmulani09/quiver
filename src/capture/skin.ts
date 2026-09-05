@@ -60,7 +60,7 @@ export class SkinSampler {
         if (yy < 25 || yy > 245) continue;
         const cb = 128 - 0.168736 * R - 0.331264 * G + 0.5 * B;
         const cr = 128 + 0.5 * R - 0.418688 * G - 0.081312 * B;
-        if (cb < 77 || cb > 127 || cr < 133 || cr > 177) continue;
+        if (cb < 75 || cb > 130 || cr < 132 || cr > 180) continue;
         r += R; g += G; b += B; count++;
       }
     }
