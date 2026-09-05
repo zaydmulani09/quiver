@@ -54,6 +54,7 @@ const PRESETS: Record<ModeName, Preset> = {
   },
 };
 
+const SITE = 'quivercam.vercel.app';
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
 const app = $('app');
