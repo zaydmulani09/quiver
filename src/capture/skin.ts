@@ -45,7 +45,7 @@ export class SkinSampler {
       return null;
     }
     const data = this.ctx.getImageData(0, 0, n, n).data;
-    let r = 0, g = 0, b = 0, count = 0, inside = 0;
+    let r = 0, g = 0, b = 0, count = 0, inside = 0, ar = 0, ag = 0, ab = 0;
     const half = n / 2;
     for (let y = 0; y < n; y++) {
       const dy = (y + 0.5 - half) / half;
