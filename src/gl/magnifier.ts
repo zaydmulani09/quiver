@@ -235,6 +235,7 @@ export class Magnifier {
     for (let i = 0; i < p.buf.length; i += 4) { const v = p.buf[i]; sum += v; if (v > peak) peak = v; }
     return { mean: sum / (p.w * p.h) / 255, peak: peak / 255 };
   }
+
   /** The pyramid level used in colour mode. */
   colorLevel(): number {
     if (this.params.level >= 0) return Math.min(this.params.level, this.g.length - 1);
