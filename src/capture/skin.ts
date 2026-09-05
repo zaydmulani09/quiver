@@ -65,7 +65,8 @@ export class SkinSampler {
       }
     }
     if (!inside) return null;
-    if (!count) return { r: 0, g: 0, b: 0, coverage: 0 };
-    return { r: r / count, g: g / count, b: b / count, coverage: count / inside };
+    const all = { r: ar / inside, g: ag / inside, b: ab / inside };
+    if (!count) return { r: 0, g: 0, b: 0, coverage: 0, all };
+    return { r: r / count, g: g / count, b: b / count, coverage: count / inside, all };
   }
 }
