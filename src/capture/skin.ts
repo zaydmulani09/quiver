@@ -55,6 +55,7 @@ export class SkinSampler {
         inside++;
         const i = (y * n + x) * 4;
         const R = data[i], G = data[i + 1], B = data[i + 2];
+        ar += R; ag += G; ab += B;
         const yy = 0.299 * R + 0.587 * G + 0.114 * B;
         if (yy < 25 || yy > 245) continue;
         const cb = 128 - 0.168736 * R - 0.331264 * G + 0.5 * B;
