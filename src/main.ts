@@ -89,6 +89,11 @@ const shareCardBtn = $<HTMLButtonElement>('shareCard');
 const tipsEl = $('tips');
 const vitalsTitle = $('vitalsTitle');
 const vitalsSub = $('vitalsSub');
+const bpmRow = $('bpmRow');
+const energyRow = $('energyRow');
+const energyBar = $('energyBar');
+const energyOut = $('energyOut');
+const toolbar = $('toolbar');
 
 let magnifier: Magnifier | null = null;
 let state: AppState = 'idle';
