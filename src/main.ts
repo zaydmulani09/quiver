@@ -394,6 +394,7 @@ function onSourceReady(): void {
   stage.classList.toggle('portrait', vh > vw);
   roi = SkinSampler.defaultRoi(vw, vh);
   sizeCanvas();
+  layoutGuide();
   resetSignal();
   lastFrameTime = -1;
   magnifier?.reset();
