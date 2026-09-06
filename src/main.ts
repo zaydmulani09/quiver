@@ -617,7 +617,7 @@ function snapshot(): void {
 async function shareCard(): Promise<void> {
   if (!lastReading || lastReading.bpm === null) return;
   try {
-    const blob = await renderShareCard(lastReading.bpm, lastReading.waveform, location.host || 'quiver.vercel.app');
+    const blob = await renderShareCard(lastReading.bpm, lastReading.waveform, SITE);
     const result = await deliverFile(blob, `my-heart-rate-${Math.round(lastReading.bpm)}bpm.png`, `${Math.round(lastReading.bpm)} bpm, measured by a webcam`);
     toast(result === 'shared' ? 'Card shared' : 'Card saved to your downloads');
   } catch (err) { toast(`Could not make the card: ${(err as Error).message}`); }
