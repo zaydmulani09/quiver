@@ -491,6 +491,7 @@ function tick(now: number): void {
       processFrame(video.currentTime);
     }
     magnifier?.render();
+    if (recorder.recording) overlay.draw(canvas, overlayState());
     if (now - lastUpdate > 150) {
       lastUpdate = now;
       updateVitals();
