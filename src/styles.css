@@ -133,7 +133,7 @@ kbd {
 [data-state='idle'] .stage { max-height: none; aspect-ratio: auto; }
 
 .guide {
-  position: absolute; left: 50%; top: 44%; width: var(--guide-w, 30%); height: var(--guide-h, 56%);
+  position: absolute; left: 50%; top: 44%; width: 30%; height: 56%;
   transform: translate(-50%, -50%);
   border: 1.5px dashed rgba(255, 255, 255, 0.55); border-radius: 50%;
   opacity: 0; transition: opacity 0.3s, border-color 0.3s;
