@@ -585,6 +585,7 @@ async function toggleRecord(): Promise<void> {
     } catch (err) { toast(`Could not save the clip: ${(err as Error).message}`); }
     return;
   }
+  overlay.draw(canvas, overlayState());
   recorder.start(() => { toggleRecord(); });
   recordBtn.classList.add('on');
   hudRec.hidden = false;
