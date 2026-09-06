@@ -565,7 +565,9 @@ function updateVitals(): void {
     shareCardBtn.disabled = true;
     guide.classList.remove('locked', 'faded');
     const secs = Math.max(0, 8 - r.seconds);
-    statusEl.textContent = r.seconds < 8 ? `Reading… ${secs.toFixed(0)}s. Hold still, face the light.` : 'Weak signal. Move closer, add light, hold still.';
+    statusEl.textContent = usingFallbackRoi && r.seconds >= 4
+      ? 'No skin found in the oval. Move your face into it, add light, or move closer.'
+      : r.seconds < 8 ? `Reading… ${secs.toFixed(0)}s. Hold still, face the light.` : 'Weak signal. Move closer, add light, hold still.';
   }
 }
 
