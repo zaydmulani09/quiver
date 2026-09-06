@@ -625,6 +625,21 @@ async function shareCard(): Promise<void> {
 
 // ---------- helpers ----------------------------------------------------------
 
+/** Place the face oval over the video's rendered rectangle (which may be letterboxed inside the stage). */
+function layoutGuide(): void {
+  const vw = video.videoWidth || 640, vh = video.videoHeight || 480;
+  const rect = stage.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+  const va = vw / vh, sa = rect.width / rect.height;
+  let w = rect.width, h = rect.height;
+  if (sa > va) w = h * va; else h = w / va;
+  const ox = (rect.width - w) / 2, oy = (rect.height - h) / 2;
+  guide.style.left = `${ox + roi.cx * w}px`;
+  guide.style.top = `${oy + roi.cy * h}px`;
+  guide.style.width = `${roi.rx * 2 * w}px`;
+  guide.style.height = `${roi.ry * 2 * h}px`;
+}
+
 function sizeCanvas(): void {
   const rect = stage.getBoundingClientRect();
   const dpr = Math.min(2, window.devicePixelRatio || 1);
