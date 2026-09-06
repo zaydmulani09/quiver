@@ -271,8 +271,8 @@ function bindUi(): void {
     }
   });
 
-  window.addEventListener('resize', () => { sizeCanvas(); waveform.resize(); });
-  new ResizeObserver(() => sizeCanvas()).observe(stage);
+  window.addEventListener('resize', () => { sizeCanvas(); layoutGuide(); waveform.resize(); });
+  new ResizeObserver(() => { sizeCanvas(); layoutGuide(); }).observe(stage);
   document.addEventListener('visibilitychange', () => { if (document.hidden) lastFrameTime = -1; });
   window.addEventListener('pagehide', () => { if (recorder.recording) recorder.stop().catch(() => {}); });
 }
