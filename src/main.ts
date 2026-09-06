@@ -685,6 +685,4 @@ function describeCameraError(err: unknown): string {
   }
 }
 
-hero.addEventListener('transitionend', () => { /* keep hero out of the tab order when hidden */ hero.inert = state === 'live'; });
-
 boot();
