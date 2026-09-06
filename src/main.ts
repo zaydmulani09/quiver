@@ -393,9 +393,6 @@ function onSourceReady(): void {
   stage.style.setProperty('--stage-ar', `${vw} / ${vh}`);
   stage.classList.toggle('portrait', vh > vw);
   roi = SkinSampler.defaultRoi(vw, vh);
-  guide.style.setProperty('--guide-w', `${roi.rx * 200}%`);
-  guide.style.setProperty('--guide-h', `${roi.ry * 200}%`);
-  guide.style.top = `${roi.cy * 100}%`;
   sizeCanvas();
   resetSignal();
   lastFrameTime = -1;
