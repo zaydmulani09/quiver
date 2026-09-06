@@ -554,6 +554,7 @@ function updateVitals(): void {
   if (r.bpm !== null) {
     bpmEl.textContent = String(Math.round(r.bpm));
     bpmEl.classList.toggle('locking', r.confidence < 0.4);
+    if (usingFallbackRoi) guide.classList.remove('locked', 'faded');
     shareCardBtn.disabled = r.confidence < 0.4;
     guide.classList.toggle('locked', r.confidence >= 0.4);
     guide.classList.toggle('faded', r.confidence >= 0.4);
