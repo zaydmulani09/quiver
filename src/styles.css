@@ -127,7 +127,8 @@ kbd {
   touch-action: none; user-select: none; -webkit-user-select: none;
 }
 .stage canvas#out { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.stage video { display: none; }
+.stage video.src-video { position: absolute; width: 2px; height: 2px; left: 0; top: 0; opacity: 0.01; pointer-events: none; }
+.stage.portrait { width: auto; height: min(78vh, 820px); max-width: 100%; }
 [data-state='idle'] canvas#out { opacity: 0; }
 [data-state='idle'] .stage { max-height: none; aspect-ratio: auto; }
 
