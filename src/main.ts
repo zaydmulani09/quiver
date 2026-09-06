@@ -391,6 +391,7 @@ async function startFile(file: File): Promise<void> {
 function onSourceReady(): void {
   const vw = video.videoWidth || 640, vh = video.videoHeight || 480;
   stage.style.setProperty('--stage-ar', `${vw} / ${vh}`);
+  stage.classList.toggle('portrait', vh > vw);
   roi = SkinSampler.defaultRoi(vw, vh);
   guide.style.setProperty('--guide-w', `${roi.rx * 200}%`);
   guide.style.setProperty('--guide-h', `${roi.ry * 200}%`);
