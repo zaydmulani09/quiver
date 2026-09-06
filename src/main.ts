@@ -592,6 +592,18 @@ async function toggleRecord(): Promise<void> {
   recTime.textContent = '0.0s';
 }
 
+function overlayState() {
+  return {
+    bpm: mode === 'pulse' && lastReading ? lastReading.bpm : null,
+    confidence: lastReading?.confidence ?? 0,
+    waveform: lastReading?.waveform ?? new Float64Array(0),
+    modeLabel: mode === 'breath' ? 'breathing' : mode,
+    alpha: magnifier?.params.alpha ?? 0,
+    accent: getComputedStyle(app).getPropertyValue('--accent').trim() || '#ff4d4d',
+    site: SITE,
+  };
+}
+
 function snapshot(): void {
   magnifier?.render();
   canvas.toBlob(async (blob) => {
