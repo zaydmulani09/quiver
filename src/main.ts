@@ -307,6 +307,10 @@ function applyMode(next: ModeName): void {
   tipsEl.innerHTML = preset.tips;
   vitalsTitle.textContent = preset.title;
   vitalsSub.textContent = preset.sub;
+  bpmRow.hidden = mode !== 'pulse';
+  shareCardBtn.hidden = mode !== 'pulse';
+  energyRow.hidden = mode === 'pulse';
+  energyIdx = 0;
   if (magnifier) {
     magnifier.setParams(preset.params);
     magnifier.reset();
