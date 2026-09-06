@@ -298,6 +298,12 @@ input[type='range']::-moz-range-thumb { width: 15px; height: 15px; border-radius
 .heart.pop { transform: scale(1.22); opacity: 1; }
 [data-state='live'] .heart { opacity: 0.6; }
 .wave { width: 100%; height: 96px; display: block; border-radius: 10px; background: #0e0e10; border: 1px solid var(--line); }
+.energy-row { display: flex; flex-direction: column; gap: 8px; padding: 6px 0 2px; }
+.energy-head { display: flex; justify-content: space-between; align-items: baseline; }
+.energy-label { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.energy-out { font-family: var(--mono); font-size: 22px; color: var(--text); }
+.energy { height: 8px; border-radius: 8px; background: var(--line); overflow: hidden; }
+.energy-bar { height: 100%; width: 0%; background: var(--accent); transition: width 0.25s ease; border-radius: 8px; }
 .conf { height: 3px; border-radius: 3px; background: var(--line); overflow: hidden; }
 .conf-bar { height: 100%; width: 0%; background: var(--accent); transition: width 0.4s ease; }
 .status { margin: 0; font-size: 13.5px; color: #c9c9cf; min-height: 1.5em; }
