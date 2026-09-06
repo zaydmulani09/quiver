@@ -606,7 +606,8 @@ function overlayState() {
 
 function snapshot(): void {
   magnifier?.render();
-  canvas.toBlob(async (blob) => {
+  overlay.draw(canvas, overlayState());
+  overlay.canvas.toBlob(async (blob) => {
     if (!blob) { toast('Snapshot failed'); return; }
     const result = await deliverFile(blob, `quiver-${mode}-${stamp()}.png`, 'quiver snapshot');
     toast(result === 'shared' ? 'Snapshot shared' : 'Snapshot saved');
