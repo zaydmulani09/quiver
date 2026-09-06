@@ -525,10 +525,10 @@ function updateVitals(): void {
         : 'Nothing moving in this band yet. Point at a chest, a pet, a machine — and hold the camera still.';
     return;
   }
-  if (coverage < 0.12) {
-    statusEl.textContent = 'Put your face inside the oval, with light on your skin.';
-    guide.classList.remove('locked', 'faded');
-    return;
+  if (view === 'signal' && magnifier) {
+    const e = magnifier.energy();
+    const target = Math.max(1, Math.min(30, 0.9 / Math.max(e.peak / 4, 0.03)));
+    magnifier.signalGain += (target - magnifier.signalGain) * 0.2;
   }
   const r = estimator.update();
   lastReading = r;
