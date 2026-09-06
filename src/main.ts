@@ -414,7 +414,10 @@ function setState(next: AppState): void {
   state = next;
   app.dataset.state = state;
   startBtn.disabled = state === 'starting' || !VideoSource.supported;
-  startBtn.textContent = state === 'starting' ? 'Starting…' : 'Start camera';
+  startBtn.lastChild!.textContent = state === 'starting' ? ' Starting…' : ' Start camera';
+  hero.inert = state === 'live';
+  toolbar.inert = state !== 'live';
+  customPanel.inert = state !== 'live';
   if (state !== 'live') { recordBtn.classList.remove('on'); hudRec.hidden = true; }
 }
 
