@@ -505,7 +505,24 @@ function tick(now: number): void {
 
 function updateVitals(): void {
   if (mode !== 'pulse') {
-    statusEl.textContent = 'Keep the camera perfectly still. Amplifying motion in band.';
+    const e = magnifier?.energy() ?? { mean: 0, peak: 0 };
+    if (view === 'signal' && magnifier) {
+      const target = Math.max(1, Math.min(30, 0.9 / Math.max(e.peak / 4, 0.03)));
+      magnifier.signalGain += (target - magnifier.signalGain) * 0.2;
+    }
+    const level = Math.min(1, Math.max(e.mean * 8, e.peak * 0.8));
+    energyHistory[energyIdx % energyHistory.length] = level;
+    energyIdx++;
+    const ordered = new Float64Array(Math.min(energyIdx, energyHistory.length));
+    for (let i = 0; i < ordered.length; i++) ordered[i] = energyHistory[(energyIdx - ordered.length + i) % energyHistory.length] * 2.4 - 1.2;
+    waveform.set(ordered);
+    energyBar.style.width = `${Math.round(level * 100)}%`;
+    energyOut.textContent = level < 0.05 ? 'still' : level < 0.35 ? 'subtle' : level < 0.7 ? 'strong' : 'saturated';
+    statusEl.textContent = level >= 0.7
+      ? 'A lot of motion in band — usually the camera moving. Set it down, or lower Amplify.'
+      : level >= 0.05
+        ? 'Amplifying motion in band. Keep the camera perfectly still.'
+        : 'Nothing moving in this band yet. Point at a chest, a pet, a machine — and hold the camera still.';
     return;
   }
   if (coverage < 0.12) {
