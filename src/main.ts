@@ -473,7 +473,11 @@ function processFrame(mediaTime: number): void {
     const s = sampler.sample(video, roi);
     if (s) {
       coverage += (s.coverage - coverage) * 0.2;
-      if (s.coverage > 0.12) estimator.push(mediaTime, s.r, s.g, s.b);
+      // The skin box misses some complexions and lighting; fall back to the whole oval, and let the
+      // spectral SNR gate decide whether there is a pulse in it.
+      usingFallbackRoi = s.coverage <= 0.12;
+      if (usingFallbackRoi) estimator.push(mediaTime, s.all.r, s.all.g, s.all.b);
+      else estimator.push(mediaTime, s.r, s.g, s.b);
     }
   }
 }
