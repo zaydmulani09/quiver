@@ -230,6 +230,8 @@ function bindUi(): void {
   bindCustom('lambda', 'lambdaOut', (v) => `${v} px`, (v) => ({ lambdaC: v }));
 
   recordBtn.addEventListener('click', toggleRecord);
+  soundBtn.addEventListener('click', toggleSound);
+  if (!Heartbeat.supported) soundBtn.hidden = true;
   snapBtn.addEventListener('click', snapshot);
   shareCardBtn.addEventListener('click', shareCard);
 
