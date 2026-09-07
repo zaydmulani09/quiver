@@ -433,6 +433,7 @@ function setState(next: AppState): void {
 function resetSignal(): void {
   estimator.reset();
   lastReading = null;
+  displayedBpm = null;
   coverage = 0;
   waveform.clear();
   bpmEl.textContent = '--';
