@@ -24,7 +24,7 @@ export class CanvasRecorder {
     return candidates.find((m) => MediaRecorder.isTypeSupported(m)) ?? '';
   }
 
-  start(onAutoStop: () => void): void {
+  start(onAutoStop: () => void, audio: MediaStreamTrack | null = null): void {
     if (this.recording) return;
     const stream = this.canvas.captureStream(30);
     const mimeType = this.pickMime();
