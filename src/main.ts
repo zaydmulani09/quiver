@@ -6,6 +6,7 @@ import { HeartRateEstimator, type HeartRateReading } from './dsp/heartrate';
 import { Waveform } from './ui/waveform';
 import { renderShareCard } from './ui/card';
 import { Overlay } from './ui/overlay';
+import { Heartbeat } from './ui/heartbeat';
 
 type ModeName = 'pulse' | 'breath' | 'vibration' | 'custom';
 type AppState = 'idle' | 'starting' | 'live';
