@@ -569,6 +569,7 @@ function updateVitals(): void {
   if (r.waveform.length) waveform.set(r.waveform);
   confBar.style.width = `${Math.round(r.confidence * 100)}%`;
   if (r.beat) {
+    heartbeat.beat();
     waveform.beat();
     heartEl.classList.add('pop');
     bpmEl.classList.add('pop');
