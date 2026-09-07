@@ -359,6 +359,6 @@ input[type='range']::-moz-range-thumb { width: 15px; height: 15px; border-radius
   .foot-kbd { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .brand-dot { animation: none; }
+  .brand-dot, .hero::before { animation: none; }
   .hero, .toolbar, .guide, .toast { transition: none; }
 }
