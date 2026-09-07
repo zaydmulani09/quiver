@@ -587,7 +587,8 @@ function updateVitals(): void {
     }
   }
   if (r.bpm !== null) {
-    bpmEl.textContent = String(Math.round(r.bpm));
+    if (displayedBpm === null) { countUpFrom = Math.max(30, r.bpm - 28); countUpStart = performance.now(); }
+    displayedBpm = r.bpm;
     bpmEl.classList.toggle('locking', r.confidence < 0.4);
     if (usingFallbackRoi) guide.classList.remove('locked', 'faded');
     shareCardBtn.disabled = r.confidence < 0.4;
