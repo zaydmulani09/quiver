@@ -517,6 +517,7 @@ async function toggleSound(): Promise<void> {
 
 function tick(now: number): void {
   requestAnimationFrame(tick);
+  paintBpm(now);
   if (state === 'live') {
     // Fallback frame pump for browsers without requestVideoFrameCallback.
     if (!usingRvfc && video.currentTime !== lastPolledTime) {
