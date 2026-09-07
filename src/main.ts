@@ -492,6 +492,29 @@ function processFrame(mediaTime: number): void {
   }
 }
 
+function paintBpm(now: number): void {
+  if (displayedBpm === null) return;
+  const k = Math.min(1, (now - countUpStart) / 700);
+  const eased = 1 - Math.pow(1 - k, 3);
+  bpmEl.textContent = String(Math.round(countUpFrom + (displayedBpm - countUpFrom) * eased));
+}
+
+async function toggleSound(): Promise<void> {
+  if (heartbeat.enabled) {
+    heartbeat.disable();
+    soundBtn.classList.remove('on');
+    soundBtn.setAttribute('aria-pressed', 'false');
+    toast('Heartbeat sound off');
+    return;
+  }
+  try {
+    await heartbeat.enable();
+    soundBtn.classList.add('on');
+    soundBtn.setAttribute('aria-pressed', 'true');
+    toast(mode === 'pulse' ? 'You will hear each beat as it is detected' : 'Sound plays in Pulse mode');
+  } catch (err) { toast(`Sound unavailable: ${(err as Error).message}`); }
+}
+
 function tick(now: number): void {
   requestAnimationFrame(tick);
   if (state === 'live') {
