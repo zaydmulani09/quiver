@@ -596,6 +596,7 @@ function updateVitals(): void {
     guide.classList.toggle('faded', r.confidence >= 0.4);
     statusEl.textContent = r.confidence >= 0.7 ? 'Locked. That is your pulse.' : r.confidence >= 0.4 ? 'Locked — hold still to sharpen it.' : 'Locking on… hold still.';
   } else {
+    displayedBpm = null;
     bpmEl.textContent = '--';
     bpmEl.classList.add('locking');
     shareCardBtn.disabled = true;
