@@ -80,6 +80,7 @@ const flipBtn = $<HTMLButtonElement>('flip');
 const snapBtn = $<HTMLButtonElement>('snap');
 const recordBtn = $<HTMLButtonElement>('record');
 const stopBtn = $<HTMLButtonElement>('stop');
+const soundBtn = $<HTMLButtonElement>('sound');
 const customPanel = $('custom');
 const bpmEl = $('bpm');
 const heartEl = $('heart');
