@@ -46,7 +46,7 @@ export class CanvasRecorder {
         const type = rec.mimeType || 'video/webm';
         const blob = new Blob(this.chunks, { type });
         const ext = type.includes('mp4') ? 'mp4' : 'webm';
-        for (const t of rec.stream.getTracks()) t.stop();
+        for (const t of rec.stream.getVideoTracks()) t.stop();
         this.recorder = null;
         resolve({ blob, ext });
       };
