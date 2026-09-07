@@ -17,14 +17,10 @@ export class CanvasRecorder {
   get recording(): boolean { return this.recorder?.state === 'recording'; }
   get elapsed(): number { return this.recording ? (performance.now() - this.startedAt) / 1000 : 0; }
 
-  private pickMime(): string {
-    const candidates = [
-      'video/mp4;codecs=avc1',
-      'video/mp4',
-      'video/webm;codecs=vp9',
-      'video/webm;codecs=vp8',
-      'video/webm',
-    ];
+  private pickMime(withAudio: boolean): string {
+    const candidates = withAudio
+      ? ['video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm']
+      : ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
     return candidates.find((m) => MediaRecorder.isTypeSupported(m)) ?? '';
   }
 
