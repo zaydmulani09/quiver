@@ -273,6 +273,7 @@ function bindUi(): void {
       case 'r': case 'R': if (state === 'live') toggleRecord(); break;
       case 's': case 'S': if (state === 'live') snapshot(); break;
       case 'f': case 'F': if (state === 'live' && !flipBtn.hidden) flipBtn.click(); break;
+      case 'm': case 'M': if (state === 'live') toggleSound(); break;
       case 'Escape': if (state === 'live') stopAll(); break;
       case ' ': if (state === 'idle' && !startBtn.disabled) { e.preventDefault(); startCamera(); } break;
       default: return;
