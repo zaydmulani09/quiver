@@ -27,7 +27,8 @@ export class CanvasRecorder {
   start(onAutoStop: () => void, audio: MediaStreamTrack | null = null): void {
     if (this.recording) return;
     const stream = this.canvas.captureStream(30);
-    const mimeType = this.pickMime();
+    if (audio) stream.addTrack(audio);
+    const mimeType = this.pickMime(!!audio);
     this.recorder = new MediaRecorder(stream, mimeType ? { mimeType, videoBitsPerSecond: 8_000_000 } : undefined);
     this.chunks = [];
     this.recorder.ondataavailable = (e) => { if (e.data.size) this.chunks.push(e.data); };
