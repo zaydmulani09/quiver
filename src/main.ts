@@ -623,7 +623,7 @@ async function toggleRecord(): Promise<void> {
     return;
   }
   overlay.draw(canvas, overlayState());
-  recorder.start(() => { toggleRecord(); });
+  recorder.start(() => { toggleRecord(); }, heartbeat.track);
   recordBtn.classList.add('on');
   hudRec.hidden = false;
   recTime.textContent = '0.0s';
