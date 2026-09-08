@@ -146,8 +146,8 @@ kbd {
 }
 @keyframes scan { to { stroke-dashoffset: -100; } }
 [data-state='live'][data-mode='pulse'] .guide { opacity: 1; }
-.guide.locked { border-style: solid; border-color: var(--accent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 0 30px color-mix(in srgb, var(--accent) 25%, transparent); }
-[data-state='live'][data-mode='pulse'] .guide.faded { opacity: 0.35; }
+.guide.locked .guide-ring { stroke: var(--accent); stroke-dasharray: none; animation: none; filter: drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 70%, transparent)); }
+[data-state='live'][data-mode='pulse'] .guide.faded { opacity: 0.4; }
 
 .split-handle {
   position: absolute; top: 0; bottom: 0; left: 50%; width: 0; pointer-events: none; opacity: 0; transition: opacity 0.2s;
