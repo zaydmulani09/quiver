@@ -56,7 +56,7 @@ export function createSyntheticStream(opts: SyntheticOptions = {}): { stream: Me
     const r = 205 * (1 - 0.0025 * pulse), g = 152 * (1 - 0.0045 * pulse), b = 125 * (1 - 0.001 * pulse);
     ctx.fillStyle = `rgb(${r.toFixed(2)},${g.toFixed(2)},${b.toFixed(2)})`;
     ctx.beginPath();
-    ctx.ellipse(320, 210, 95, 125, 0, 0, Math.PI * 2);
+    ctx.ellipse(fx, fy, 95, 125, 0, 0, Math.PI * 2);
     ctx.fill();
     // Eyes, brows, mouth (non-skin regions the mask should reject).
     ctx.fillStyle = '#2a1e1a';
