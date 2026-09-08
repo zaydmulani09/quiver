@@ -483,6 +483,18 @@ function processFrame(mediaTime: number): void {
   magnifier.process(video, dt);
 
   if (mode === 'pulse') {
+    // Slide the oval onto the face: every 4th frame, find the skin centroid and ease the ROI toward it.
+    // Size stays fixed (the default is a good face size at arm's length); only the centre tracks.
+    if (frameCount++ % 4 === 0) {
+      const loc = sampler.locate(video);
+      const vw = video.videoWidth, vh = video.videoHeight;
+      const bounds = (v: number, r: number) => Math.min(1 - r, Math.max(r, v));
+      const tx = loc ? bounds(loc.cx, baseRoi.rx) : baseRoi.cx;
+      const ty = loc ? bounds(loc.cy - baseRoi.ry * 0.15, baseRoi.ry) : baseRoi.cy;
+      const k = loc ? 0.12 : 0.04;
+      roi = { ...roi, cx: roi.cx + (tx - roi.cx) * k, cy: roi.cy + (ty - roi.cy) * k };
+      if (vw && vh && (Math.abs(tx - roi.cx) > 0.002 || Math.abs(ty - roi.cy) > 0.002)) layoutGuide();
+    }
     const s = sampler.sample(video, roi);
     if (s) {
       coverage += (s.coverage - coverage) * 0.2;
