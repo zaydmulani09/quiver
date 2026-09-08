@@ -164,7 +164,7 @@ function boot(): void {
 async function startSynthetic(bpm: number, face?: number[]): Promise<void> {
   if (!magnifier) return;
   const { createSyntheticStream } = await import('./dev/synthetic');
-  const { stream } = createSyntheticStream({ bpm });
+  const { stream } = createSyntheticStream({ bpm, faceX: face?.[0], faceY: face?.[1] });
   setState('starting');
   await source.startStream(stream, 'synthetic');
   magnifier.mirror = false;
