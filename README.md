@@ -69,6 +69,8 @@ src/
   capture/recorder.ts  MediaRecorder + share/download
   ui/waveform.ts       pulse trace
   ui/card.ts           share card renderer
+  ui/overlay.ts        burned-in caption compositor for clips/snapshots
+  ui/heartbeat.ts      synthesised lub-dub + haptics
   main.ts              app
 tests/dsp.test.ts      vitest
 ```
