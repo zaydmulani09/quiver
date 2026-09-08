@@ -403,7 +403,8 @@ function onSourceReady(): void {
   const vw = video.videoWidth || 640, vh = video.videoHeight || 480;
   stage.style.setProperty('--stage-ar', `${vw} / ${vh}`);
   stage.classList.toggle('portrait', vh > vw);
-  roi = SkinSampler.defaultRoi(vw, vh);
+  baseRoi = SkinSampler.defaultRoi(vw, vh);
+  roi = { ...baseRoi };
   sizeCanvas();
   layoutGuide();
   resetSignal();
