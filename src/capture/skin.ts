@@ -61,6 +61,11 @@ export class SkinSampler {
     }
     const total = (W - 6) * (H - 4);
     if (n < total * 0.02) return null;
+    const mx = sx / n, my = sy / n;
+    const vx = Math.max(0, sxx / n - mx * mx), vy = Math.max(0, syy / n - my * my);
+    return { cx: (mx + 0.5) / W, cy: (my + 0.5) / H, sx: Math.sqrt(vx) / W, sy: Math.sqrt(vy) / H, fraction: n / total };
+  }
+
   /** Face-shaped ellipse near the centre of the frame, sized off the short edge. */
   static defaultRoi(videoW: number, videoH: number): Roi {
     const short = Math.min(videoW, videoH);
