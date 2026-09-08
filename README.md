@@ -23,6 +23,8 @@ Views: **Magnified**, **Compare** (draggable before/after split), **Signal** (th
 
 Outputs: record a clip (MediaRecorder, up to 15 s, with the heartbeat audio if sound is on), save a snapshot, or share a heart-rate card. Recordings and snapshots carry a burned-in caption — the BPM, the pulse trace, the mode — so they explain themselves when posted. All written straight to your device.
 
+Extras: **Sound** (M) plays a synthesised lub-dub on every detected beat (and a haptic tick on phones); the face ring animates while scanning and locks solid when the pulse is found; the visual band narrows around your pulse once locked.
+
 ## How it works
 
 The pipeline is a real-time reimplementation of **Eulerian Video Magnification** (Wu, Rubinstein, Shih, Guttag, Durand & Freeman, MIT CSAIL, SIGGRAPH 2012) on WebGL2, plus **POS** remote photoplethysmography (Wang, den Brinker, Stuijk & de Haan, IEEE TBME 2017) for the number.
