@@ -366,6 +366,6 @@ input[type='range']::-moz-range-thumb { width: 15px; height: 15px; border-radius
   .foot-kbd { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .brand-dot, .hero::before { animation: none; }
+  .brand-dot, .hero::before, .guide-ring { animation: none; }
   .hero, .toolbar, .guide, .toast { transition: none; }
 }
