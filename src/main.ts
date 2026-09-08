@@ -161,7 +161,7 @@ function boot(): void {
 }
 
 /** Dev-only: a canvas-generated "camera" with a known pulse so the pipeline can be tested headless. */
-async function startSynthetic(bpm: number): Promise<void> {
+async function startSynthetic(bpm: number, face?: number[]): Promise<void> {
   if (!magnifier) return;
   const { createSyntheticStream } = await import('./dev/synthetic');
   const { stream } = createSyntheticStream({ bpm });
