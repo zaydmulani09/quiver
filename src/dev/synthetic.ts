@@ -63,7 +63,7 @@ export function createSyntheticStream(opts: SyntheticOptions = {}): { stream: Me
     ctx.beginPath(); ctx.ellipse(fx - 35, fy - 25, 13, 8, 0, 0, Math.PI * 2); ctx.fill();
     ctx.beginPath(); ctx.ellipse(fx + 35, fy - 25, 13, 8, 0, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#7a3b3b';
-    ctx.beginPath(); ctx.ellipse(320, 275, 26, 8, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(fx, fy + 65, 26, 8, 0, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#2a1e1a';
     ctx.fillRect(268, 165, 36, 5); ctx.fillRect(336, 165, 36, 5);
 
