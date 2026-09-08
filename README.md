@@ -21,7 +21,7 @@ Everything runs on your GPU. No server, no model, no upload. The page makes zero
 
 Views: **Magnified**, **Compare** (draggable before/after split), **Signal** (the amplified band alone, as a signed heat map — you can watch the blood-flow wave sweep across a face).
 
-Outputs: record a clip (MediaRecorder, up to 15 s), save a snapshot, or share a heart-rate card. All written straight to your device.
+Outputs: record a clip (MediaRecorder, up to 15 s, with the heartbeat audio if sound is on), save a snapshot, or share a heart-rate card. Recordings and snapshots carry a burned-in caption — the BPM, the pulse trace, the mode — so they explain themselves when posted. All written straight to your device.
 
 ## How it works
 
