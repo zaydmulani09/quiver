@@ -10,6 +10,9 @@ export interface SyntheticOptions {
   width?: number;
   height?: number;
   fps?: number;
+  /** Face centre as a fraction of the frame (default 0.5, 0.44). */
+  faceX?: number;
+  faceY?: number;
 }
 
 export function createSyntheticStream(opts: SyntheticOptions = {}): { stream: MediaStream; stop: () => void } {
