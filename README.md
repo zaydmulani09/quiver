@@ -6,7 +6,7 @@ quiver is a motion microscope that runs in the browser. It amplifies the invisib
 
 Everything runs on your GPU. No server, no model, no upload. The page makes zero network requests after it loads.
 
-**Live:** https://quiver.vercel.app
+**Live:** https://quivercam.vercel.app
 
 ---
 
