@@ -20,6 +20,7 @@ export function createSyntheticStream(opts: SyntheticOptions = {}): { stream: Me
   const breaths = opts.breathsPerMin ?? 15;
   const vib = opts.vibrationHz ?? 5;
   const W = opts.width ?? 640, H = opts.height ?? 480, fps = opts.fps ?? 30;
+  const fx = (opts.faceX ?? 0.5) * W, fy = (opts.faceY ?? 0.4375) * H;
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d')!;
