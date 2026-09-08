@@ -134,9 +134,8 @@ kbd {
 
 .guide {
   position: absolute; left: 50%; top: 44%; width: 30%; height: 56%;
-  transform: translate(-50%, -50%);
-  border: 1.5px dashed rgba(255, 255, 255, 0.55); border-radius: 50%;
-  opacity: 0; transition: opacity 0.3s, border-color 0.3s;
+  transform: translate(-50%, -50%); overflow: visible;
+  opacity: 0; transition: opacity 0.3s;
   pointer-events: none;
 }
 [data-state='live'][data-mode='pulse'] .guide { opacity: 1; }
