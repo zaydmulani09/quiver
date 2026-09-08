@@ -60,8 +60,8 @@ export function createSyntheticStream(opts: SyntheticOptions = {}): { stream: Me
     ctx.fill();
     // Eyes, brows, mouth (non-skin regions the mask should reject).
     ctx.fillStyle = '#2a1e1a';
-    ctx.beginPath(); ctx.ellipse(285, 185, 13, 8, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(355, 185, 13, 8, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(fx - 35, fy - 25, 13, 8, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(fx + 35, fy - 25, 13, 8, 0, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#7a3b3b';
     ctx.beginPath(); ctx.ellipse(320, 275, 26, 8, 0, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#2a1e1a';
