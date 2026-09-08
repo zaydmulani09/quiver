@@ -27,6 +27,40 @@ export class SkinSampler {
     this.ctx = this.canvas.getContext('2d', { willReadFrequently: true })!;
   }
 
+  private frame: HTMLCanvasElement | null = null;
+  private frameCtx: CanvasRenderingContext2D | null = null;
+
+  /**
+   * Find where the skin is. Draws the whole frame at 64x48, classifies skin, and returns the
+   * centroid and spread of skin pixels (normalised), or null if there is hardly any skin.
+   * Used to slide the ROI onto the face so nobody has to line up with the oval.
+   */
+  locate(video: HTMLVideoElement): { cx: number; cy: number; sx: number; sy: number; fraction: number } | null {
+    const vw = video.videoWidth, vh = video.videoHeight;
+    if (!vw || !vh) return null;
+    if (!this.frame) {
+      this.frame = document.createElement('canvas');
+      this.frame.width = 64; this.frame.height = 48;
+      this.frameCtx = this.frame.getContext('2d', { willReadFrequently: true });
+    }
+    const W = 64, H = 48;
+    try { this.frameCtx!.drawImage(video, 0, 0, W, H); } catch { return null; }
+    const d = this.frameCtx!.getImageData(0, 0, W, H).data;
+    let n = 0, sx = 0, sy = 0, sxx = 0, syy = 0;
+    for (let y = 2; y < H - 2; y++) {
+      for (let x = 3; x < W - 3; x++) {
+        const i = (y * W + x) * 4;
+        const R = d[i], G = d[i + 1], B = d[i + 2];
+        const yy = 0.299 * R + 0.587 * G + 0.114 * B;
+        if (yy < 25 || yy > 245) continue;
+        const cb = 128 - 0.168736 * R - 0.331264 * G + 0.5 * B;
+        const cr = 128 + 0.5 * R - 0.418688 * G - 0.081312 * B;
+        if (cb < 75 || cb > 130 || cr < 132 || cr > 180) continue;
+        n++; sx += x; sy += y; sxx += x * x; syy += y * y;
+      }
+    }
+    const total = (W - 6) * (H - 4);
+    if (n < total * 0.02) return null;
   /** Face-shaped ellipse near the centre of the frame, sized off the short edge. */
   static defaultRoi(videoW: number, videoH: number): Roi {
     const short = Math.min(videoW, videoH);
