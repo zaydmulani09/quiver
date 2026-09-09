@@ -117,6 +117,7 @@ let frameCount = 0;
 let lastReading: HeartRateReading | null = null;
 let coverage = 0;
 let usingFallbackRoi = false;
+let motionLevel = 0;      // mean |Δluma| per frame, fast attack / slow release
 const energyHistory = new Float64Array(180); // ~6 s at the vitals update rate
 let energyIdx = 0;
 let fps = 0;
