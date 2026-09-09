@@ -140,7 +140,7 @@ export class Magnifier {
     if (this.params.mode === 'color') {
       const k = this.colorLevel();
       this.iirStep(k, this.g[k].tex, r1, r2, reset);
-      const gain = this.params.alpha;
+      const gain = this.params.alpha * this.gainScale;
       const cur = this.iir[k][this.iirCur[k]];
       this.draw('colorBand', this.diff!, (u) => {
         this.bindTex('u_lo1', cur.a, 0);
