@@ -175,7 +175,7 @@ export class Magnifier {
         this.bindTex('u_coarse', prevCoarse ? prevCoarse.tex : this.g[0].tex, 0);
         this.bindTex('u_lo1', cur ? cur.a : this.g[0].tex, 1);
         this.bindTex('u_lo2', cur ? cur.b : this.g[0].tex, 2);
-        const g = cur ? gain : 0;
+        const g = cur ? gain * this.gainScale : 0;
         gl.uniform3f(u.get('u_gain')!, g, g * this.params.chromaAtt, g * this.params.chromaAtt);
       });
       coarse = target;
