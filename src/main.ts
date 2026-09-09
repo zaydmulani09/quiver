@@ -484,6 +484,14 @@ function processFrame(mediaTime: number): void {
   lastFrameTime = mediaTime;
   fps += ((1 / Math.max(dt, 1 / 120)) - fps) * 0.1;
 
+  // Motion gate: amplifying a moving scene just produces blurry ghosts, so fade the gain out as soon
+  // as the picture changes and ease it back in over ~1.5 s of stillness.
+  const raw = sampler.motion(video);
+  motionLevel = raw > motionLevel ? raw : motionLevel + (raw - motionLevel) * 0.06;
+  const still = Math.max(0, Math.min(1, 1 - (motionLevel - 1.0) / 2.5));
+  magnifier.gainScale += (still * still - magnifier.gainScale) * 0.25;
+  hudHint.classList.toggle('warn', motionLevel > 2.2);
+
   magnifier.process(video, dt);
 
   if (mode === 'pulse') {
