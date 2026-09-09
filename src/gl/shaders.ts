@@ -198,6 +198,12 @@ void main() {
   if (u_flip > 0.5) uv.x = 1.0 - uv.x;
   vec3 rgb = texture(u_video, vec2(uv.x, 1.0 - uv.y)).rgb;
   vec3 diff = texture(u_diff, uv).rgb;
+  if (u_mask.w > 0.0) {
+    // Feathered ellipse around the face: full gain inside, u_maskFloor outside.
+    vec2 d = (uv - u_mask.xy) / u_mask.zw;
+    float m = 1.0 - smoothstep(0.8, 1.3, length(d));
+    diff *= mix(u_maskFloor, 1.0, m);
+  }
   vec3 mag = clamp(yiq2rgb(rgb2yiq(rgb) + diff), 0.0, 1.0);
 
   if (u_view == 3) { o = vec4(rgb, 1.0); return; }
