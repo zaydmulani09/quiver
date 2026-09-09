@@ -225,6 +225,8 @@ kbd {
 @keyframes blink { 50% { opacity: 0.25; } }
 .hud-hint { background: rgba(0, 0, 0, 0.55); padding: 5px 9px; border-radius: 8px; backdrop-filter: blur(6px); }
 .hud-hint:empty { display: none; }
+.hud-hint.warn { color: #fff; background: color-mix(in srgb, var(--accent) 55%, rgba(0,0,0,0.6)); }
+.hud-hint.warn::before { content: 'hold still · '; }
 .hud-fps { margin-left: auto; color: rgba(255, 255, 255, 0.5); }
 
 .toast {
