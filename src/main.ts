@@ -437,6 +437,8 @@ function setState(next: AppState): void {
 
 function resetSignal(): void {
   estimator.reset();
+  sampler.resetMotion();
+  motionLevel = 0;
   lastReading = null;
   displayedBpm = null;
   coverage = 0;
