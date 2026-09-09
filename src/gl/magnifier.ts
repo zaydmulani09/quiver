@@ -203,6 +203,9 @@ export class Magnifier {
     gl.uniform2f(prog.get('u_offset')!, (1 - sx) / 2, (1 - sy) / 2);
     gl.uniform1f(prog.get('u_signalGain')!, this.signalGain);
     gl.uniform2f(prog.get('u_canvas')!, cw, ch);
+    const m = this.mask;
+    gl.uniform4f(prog.get('u_mask')!, m ? m.cx : 0, m ? m.cy : 0, m ? m.rx : 0, m ? m.ry : 0);
+    gl.uniform1f(prog.get('u_maskFloor')!, this.maskFloor);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 
