@@ -177,6 +177,8 @@ uniform vec2 u_scale;      // letterbox scale
 uniform vec2 u_offset;     // letterbox offset
 uniform float u_signalGain;
 uniform vec2 u_canvas;     // canvas size in px
+uniform vec4 u_mask;       // ellipse centre (uv) and radii (uv); w<=0 disables
+uniform float u_maskFloor; // gain outside the ellipse
 in vec2 v_uv;
 out vec4 o;
 ${COLOR_SPACE}
