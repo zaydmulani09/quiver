@@ -41,6 +41,39 @@ export class SkinSampler {
       this.frame.width = 64; this.frame.height = 48;
       this.frameCtx = this.frame.getContext('2d', { willReadFrequently: true });
     }
+    try { this.frameCtx!.drawImage(video, 0, 0, 64, 48); } catch { return null; }
+    this.lastFrameData = this.frameCtx!.getImageData(0, 0, 64, 48).data;
+    return this.lastFrameData;
+  }
+
+  /**
+   * How much the picture changed since the previous call: mean absolute luma difference (0..255)
+   * over the whole frame. Head or camera motion lights this up long before it is visible; the
+   * magnifier uses it to fade the gain down so motion does not turn into amplified ghosting.
+   */
+  resetMotion(): void { this.prevLuma = null; }
+
+  motion(video: HTMLVideoElement): number {
+    const d = this.grabFrame(video);
+    if (!d) return 0;
+    const n = 64 * 48;
+    const first = !this.prevLuma;
+    if (!this.prevLuma) this.prevLuma = new Float32Array(n);
+    let sum = 0;
+    for (let i = 0; i < n; i++) {
+      const l = 0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2];
+      sum += Math.abs(l - this.prevLuma[i]);
+      this.prevLuma[i] = l;
+    }
+    return first ? 0 : sum / n;
+  }
+
+  /**
+   * Find where the skin is. Draws the whole frame at 64x48, classifies skin, and returns the
+   * centroid and spread of skin pixels (normalised), or null if there is hardly any skin.
+   * Used to slide the ROI onto the face so nobody has to line up with the oval.
+   */
+  locate(video: HTMLVideoElement): { cx: number; cy: number; sx: number; sy: number; fraction: number } | null {
     const W = 64, H = 48;
     try { this.frameCtx!.drawImage(video, 0, 0, W, H); } catch { return null; }
     const d = this.frameCtx!.getImageData(0, 0, W, H).data;
