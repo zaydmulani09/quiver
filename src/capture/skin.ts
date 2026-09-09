@@ -32,12 +32,8 @@ export class SkinSampler {
   private prevLuma: Float32Array | null = null;
   private lastFrameData: Uint8ClampedArray | null = null;
 
-  /**
-   * Find where the skin is. Draws the whole frame at 64x48, classifies skin, and returns the
-   * centroid and spread of skin pixels (normalised), or null if there is hardly any skin.
-   * Used to slide the ROI onto the face so nobody has to line up with the oval.
-   */
-  locate(video: HTMLVideoElement): { cx: number; cy: number; sx: number; sy: number; fraction: number } | null {
+  /** Draw the frame at 64x48 once per call; shared by motion() and locate(). */
+  private grabFrame(video: HTMLVideoElement): Uint8ClampedArray | null {
     const vw = video.videoWidth, vh = video.videoHeight;
     if (!vw || !vh) return null;
     if (!this.frame) {
