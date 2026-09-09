@@ -22,7 +22,7 @@ interface Preset {
 
 const PRESETS: Record<ModeName, Preset> = {
   pulse: {
-    params: { mode: 'color', alpha: 60, fLo: 0.7, fHi: 2.5, chromaAtt: 1, level: -1, lambdaC: 16 },
+    params: { mode: 'color', alpha: 50, fLo: 0.7, fHi: 2.5, chromaAtt: 1, level: -1, lambdaC: 16 },
     alphaMax: 150,
     hint: 'face in the oval · hold still · even light',
     title: 'Heart rate',
