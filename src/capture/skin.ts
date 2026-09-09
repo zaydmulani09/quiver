@@ -29,6 +29,8 @@ export class SkinSampler {
 
   private frame: HTMLCanvasElement | null = null;
   private frameCtx: CanvasRenderingContext2D | null = null;
+  private prevLuma: Float32Array | null = null;
+  private lastFrameData: Uint8ClampedArray | null = null;
 
   /**
    * Find where the skin is. Draws the whole frame at 64x48, classifies skin, and returns the
