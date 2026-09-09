@@ -156,8 +156,8 @@ function boot(): void {
   requestAnimationFrame(tick);
 
   if (import.meta.env.DEV) {
-    (window as unknown as { __quiver: unknown }).__quiver = { estimator, sampler, overlay, overlayState, get magnifier() { return magnifier; }, get reading() { return lastReading; }, get coverage() { return coverage; }, get fps() { return fps; } };
-    if (params.has('synthetic')) { const f = (params.get('face') ?? '').split(',').map(Number); startSynthetic(Number(params.get('synthetic')) || 72, f.length === 2 && !f.some(isNaN) ? f : undefined); }
+    (window as unknown as { __quiver: unknown }).__quiver = { estimator, sampler, overlay, overlayState, get motion() { return motionLevel; }, get magnifier() { return magnifier; }, get reading() { return lastReading; }, get coverage() { return coverage; }, get fps() { return fps; } };
+    if (params.has('synthetic')) { const f = (params.get('face') ?? '').split(',').map(Number); startSynthetic(Number(params.get('synthetic')) || 72, f.length === 2 && !f.some(isNaN) ? f : undefined, params.has('shake')); }
   }
 }
 
