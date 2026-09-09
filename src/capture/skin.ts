@@ -75,8 +75,9 @@ export class SkinSampler {
    */
   locate(video: HTMLVideoElement): { cx: number; cy: number; sx: number; sy: number; fraction: number } | null {
     const W = 64, H = 48;
-    try { this.frameCtx!.drawImage(video, 0, 0, W, H); } catch { return null; }
-    const d = this.frameCtx!.getImageData(0, 0, W, H).data;
+    // Reuse the frame motion() grabbed this tick when available.
+    const d = this.lastFrameData ?? this.grabFrame(video);
+    if (!d) return null;
     let n = 0, sx = 0, sy = 0, sxx = 0, syy = 0;
     for (let y = 2; y < H - 2; y++) {
       for (let x = 3; x < W - 3; x++) {
