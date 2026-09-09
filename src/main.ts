@@ -326,6 +326,7 @@ function applyMode(next: ModeName): void {
   if (magnifier) {
     magnifier.setParams(preset.params);
     magnifier.reset();
+    if (mode !== 'pulse') magnifier.mask = null;
   }
   syncAlphaRange();
   syncCustomInputs();
