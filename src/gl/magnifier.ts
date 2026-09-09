@@ -61,6 +61,11 @@ export class Magnifier {
   split = 0.5;
   mirror = true;
   signalGain = 4;
+  /** Runtime multiplier on α (0..1) — driven down while the scene is moving. */
+  gainScale = 1;
+  /** Soft ellipse (video UV, y-up) that confines the effect; null = whole frame. */
+  mask: { cx: number; cy: number; rx: number; ry: number } | null = null;
+  maskFloor = 0.12;
 
   constructor(readonly canvas: HTMLCanvasElement) {
     const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, premultipliedAlpha: false, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
