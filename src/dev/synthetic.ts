@@ -44,6 +44,8 @@ export function createSyntheticStream(opts: SyntheticOptions = {}): { stream: Me
 
   const draw = () => {
     const t = (performance.now() - t0) / 1000;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    if (opts.shake && t % 6 < 2) ctx.translate((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 8);
     ctx.drawImage(noise, 0, 0);
 
     // Chest: a shirt-coloured block that rises and falls ~0.7 px with breathing.
