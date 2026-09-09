@@ -506,6 +506,8 @@ function processFrame(mediaTime: number): void {
       const k = loc ? 0.12 : 0.04;
       roi = { ...roi, cx: roi.cx + (tx - roi.cx) * k, cy: roi.cy + (ty - roi.cy) * k };
       if (vw && vh && (Math.abs(tx - roi.cx) > 0.002 || Math.abs(ty - roi.cy) > 0.002)) layoutGuide();
+      // Confine the colour flush to the face (soft ellipse, a bit larger than the ROI, y-up UV).
+      magnifier.mask = { cx: roi.cx, cy: 1 - roi.cy, rx: roi.rx * 1.45, ry: roi.ry * 1.35 };
     }
     const s = sampler.sample(video, roi);
     if (s) {
