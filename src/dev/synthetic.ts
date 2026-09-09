@@ -13,6 +13,8 @@ export interface SyntheticOptions {
   /** Face centre as a fraction of the frame (default 0.5, 0.44). */
   faceX?: number;
   faceY?: number;
+  /** Jitter the whole scene for 2 s out of every 6 s (tests the motion gate). */
+  shake?: boolean;
 }
 
 export function createSyntheticStream(opts: SyntheticOptions = {}): { stream: MediaStream; stop: () => void } {
