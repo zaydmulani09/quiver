@@ -100,8 +100,15 @@ export class HeartRateEstimator {
     const n = R.y.length;
     if (n < this.posWin + 2) return empty;
 
-    const pulse = pos(R.y, G.y, B.y, this.posWin);
-    const bp = bandpassBiquad(this.fs, this.minHz, this.maxHz);
+    // 4th-order band-pass (two cascaded biquads, slightly wider than the search band so the
+    // cascade's narrowing does not eat the edges). A single biquad only rejects a 0.1–0.3 Hz head
+    // sway by ~18 dB, which is enough to leak into the 42 bpm band edge and fake a lock there.
+    const bp = bandpassBiquad(this.fs, this.minHz * 0.92, this.maxHz * 1.07);
+    const w = hann(n);
+    const lobe = Math.ceil((2 * this.nfft) / n);
+
+    // Three projections of the same colour traces; real cameras, lighting and skin tones favour
+    // different ones, so run all three and keep whichever gives the cleanest spectrum.
     // Causal filtering keeps the newest samples clean (a zero-phase pass would smear the tail
     // with its reverse-direction transient); the ~140 ms group delay is imperceptible.
     const filtered = biquadFilter(detrend(pulse), bp);
