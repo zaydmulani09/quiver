@@ -25,6 +25,7 @@ export class SkinSampler {
     this.canvas.width = size;
     this.canvas.height = size;
     this.ctx = this.canvas.getContext('2d', { willReadFrequently: true })!;
+    this.ctx.imageSmoothingQuality = 'high';
   }
 
   private frame: HTMLCanvasElement | null = null;
