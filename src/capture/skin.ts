@@ -54,7 +54,7 @@ export class SkinSampler {
    * over the whole frame. Head or camera motion lights this up long before it is visible; the
    * magnifier uses it to fade the gain down so motion does not turn into amplified ghosting.
    */
-  resetMotion(): void { this.prevLuma = null; }
+  resetMotion(): void { this.prevBlocks = null; this.motionFloor = 0; }
 
   motion(video: HTMLVideoElement): number {
     const d = this.grabFrame(video);
