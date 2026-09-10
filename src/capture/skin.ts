@@ -59,14 +59,21 @@ export class SkinSampler {
   motion(video: HTMLVideoElement): number {
     const d = this.grabFrame(video);
     if (!d) return 0;
-    const n = 64 * 48;
-    const first = !this.prevLuma;
-    if (!this.prevLuma) this.prevLuma = new Float32Array(n);
-    let sum = 0;
-    for (let i = 0; i < n; i++) {
-      const l = 0.299 * d[i * 4] + 0.587 * d[i * 4 + 1] + 0.114 * d[i * 4 + 2];
-      sum += Math.abs(l - this.prevLuma[i]);
-      this.prevLuma[i] = l;
+    // Mean luma of an 8×6 grid of blocks (each 8×8 cells of the 64×48 frame, ~80×80 source px):
+    // sensor noise averages out, real motion of edges does not.
+    const BX = 8, BY = 6, CW = 8, CH = 8;
+    const blocks = new Float32Array(BX * BY);
+    for (let by = 0; by < BY; by++) {
+      for (let bx = 0; bx < BX; bx++) {
+        let sum = 0;
+        for (let y = by * CH; y < (by + 1) * CH; y++) {
+          for (let x = bx * CW; x < (bx + 1) * CW; x++) {
+            const i = (y * 64 + x) * 4;
+            sum += 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+          }
+        }
+        blocks[by * BX + bx] = sum / (CW * CH);
+      }
     }
     return first ? 0 : sum / n;
   }
