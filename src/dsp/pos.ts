@@ -78,5 +78,5 @@ function project(
     hm /= winLen;
     for (let k = 0; k < winLen; k++) h[start + k] += s1[k] + alpha * s2[k] - hm;
   }
-  return h;
+  return normaliseOverlap(h, winLen);
 }
