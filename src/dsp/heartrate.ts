@@ -15,6 +15,10 @@ export interface HeartRateReading {
   waveform: Float64Array;
   /** Whether a beat peak was confirmed since the previous update. */
   beat: boolean;
+  /** Which rPPG projection produced the cleanest spectrum this update. */
+  method: 'pos' | 'chrom' | 'green';
+  /** Spectral SNR of the chosen method (signal lobes over the rest of the band). */
+  snr: number;
 }
 
 export interface HeartRateOptions {
