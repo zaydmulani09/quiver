@@ -68,9 +68,8 @@ function project(
     const mr = mean(r, start, end + 1), mg = mean(g, start, end + 1), mb = mean(b, start, end + 1);
     if (mr === 0 || mg === 0 || mb === 0) continue;
     for (let k = 0; k < winLen; k++) {
-      const rn = r[start + k] / mr, gn = g[start + k] / mg, bn = b[start + k] / mb;
-      s1[k] = gn - bn;
-      s2[k] = gn + bn - 2 * rn;
+      const [a, c] = proj(r[start + k] / mr, g[start + k] / mg, b[start + k] / mb);
+      s1[k] = a; s2[k] = c;
     }
     const sd2 = std(s2);
     const alpha = sd2 > 1e-9 ? std(s1) / sd2 : 0;
