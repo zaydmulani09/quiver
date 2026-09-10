@@ -14,6 +14,40 @@ import { mean, std } from './filters';
  * projections with an alpha-tuned gain, and overlap-adds the mean-removed result.
  */
 export function pos(r: ArrayLike<number>, g: ArrayLike<number>, b: ArrayLike<number>, winLen: number): Float64Array {
+  return project(r, g, b, winLen, (rn, gn, bn) => [gn - bn, gn + bn - 2 * rn]);
+}
+
+/**
+ * CHROM — chrominance-based rPPG. de Haan & Jeanne, IEEE TBME 2013.
+ * Same sliding-window machinery as POS with a different pair of projections:
+ * Xs = 3R − 2G, Ys = 1.5R + G − 1.5B (on normalised colour).
+ */
+export function chrom(r: ArrayLike<number>, g: ArrayLike<number>, b: ArrayLike<number>, winLen: number): Float64Array {
+  return project(r, g, b, winLen, (rn, gn, bn) => [3 * rn - 2 * gn, 1.5 * rn + gn - 1.5 * bn]);
+}
+
+/** Plain normalised green channel — the classic, surprisingly competitive baseline. */
+export function green(g: ArrayLike<number>, winLen: number): Float64Array {
+  const n = g.length;
+  const h = new Float64Array(n);
+  if (n < winLen) return h;
+  for (let end = winLen - 1; end < n; end++) {
+    const start = end - winLen + 1;
+    const m = mean(g, start, end + 1);
+    if (m === 0) continue;
+    for (let k = 0; k < winLen; k++) h[start + k] += g[start + k] / m - 1;
+  }
+  return normaliseOverlap(h, winLen);
+}
+
+/**
+ * Overlap-add leaves the first and last window's worth of samples with fewer contributions
+ * (a fading envelope at both ends). Divide by the number of covering windows so the amplitude
+ * is uniform — the newest samples are exactly the ones the beat detector looks at.
+ */
+function normaliseOverlap(h: Float64Array, winLen: number): Float64Array {
+  const n = h.length;
+  for (let i = 0; i < n; i++) {
   const n = r.length;
   const h = new Float64Array(n);
   if (n < winLen) return h;
