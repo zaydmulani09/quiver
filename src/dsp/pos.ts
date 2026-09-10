@@ -48,6 +48,16 @@ export function green(g: ArrayLike<number>, winLen: number): Float64Array {
 function normaliseOverlap(h: Float64Array, winLen: number): Float64Array {
   const n = h.length;
   for (let i = 0; i < n; i++) {
+    const cover = Math.min(i + 1, n - i, winLen, n - winLen + 1);
+    if (cover > 0) h[i] /= cover;
+  }
+  return h;
+}
+
+function project(
+  r: ArrayLike<number>, g: ArrayLike<number>, b: ArrayLike<number>, winLen: number,
+  proj: (rn: number, gn: number, bn: number) => [number, number],
+): Float64Array {
   const n = r.length;
   const h = new Float64Array(n);
   if (n < winLen) return h;
