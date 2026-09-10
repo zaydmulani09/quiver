@@ -91,7 +91,7 @@ export class HeartRateEstimator {
 
   update(): HeartRateReading {
     const seconds = this.seconds;
-    const empty: HeartRateReading = { bpm: this.smoothed, rawBpm: 0, confidence: this.conf, seconds, waveform: new Float64Array(0), beat: false };
+    const empty: HeartRateReading = { bpm: this.smoothed, rawBpm: 0, confidence: this.conf, seconds, waveform: new Float64Array(0), beat: false, method: this.method, snr: 0 };
     if (seconds < 3 || this.t.length < this.posWin + 2) return empty;
 
     const R = resampleUniform(this.t, this.r, this.fs);
