@@ -1,6 +1,6 @@
 import { bandpassBiquad, biquadFilter, detrend, dominantFrequency, hann, resampleUniform } from './filters';
 import { powerSpectrum } from './fft';
-import { pos } from './pos';
+import { chrom, green, pos } from './pos';
 
 export interface HeartRateReading {
   /** Smoothed beats-per-minute estimate, or null while locking on. */
