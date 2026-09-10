@@ -111,7 +111,30 @@ export class HeartRateEstimator {
     // different ones, so run all three and keep whichever gives the cleanest spectrum.
     // Causal filtering keeps the newest samples clean (a zero-phase pass would smear the tail
     // with its reverse-direction transient); the ~140 ms group delay is imperceptible.
-    const filtered = biquadFilter(detrend(pulse), bp);
+    const candidates: { method: 'pos' | 'chrom' | 'green'; filtered: Float64Array; freq: number; snr: number }[] = [];
+    const tryMethod = (method: 'pos' | 'chrom' | 'green', raw: Float64Array) => {
+      const f = biquadFilter(biquadFilter(detrend(raw), bp), bp);
+      const windowed = new Float64Array(n);
+      for (let i = 0; i < n; i++) windowed[i] = f[i] * w[i];
+      const power = powerSpectrum(windowed, this.nfft);
+      const { freq, snr } = dominantFrequency(power, this.fs, this.nfft, this.minHz, this.maxHz, lobe);
+      candidates.push({ method, filtered: f, freq, snr });
+    };
+    tryMethod('pos', pos(R.y, G.y, B.y, this.posWin));
+    tryMethod('chrom', chrom(R.y, G.y, B.y, this.posWin));
+    tryMethod('green', green(G.y, this.posWin));
+    // Stick with the current method unless another is clearly better for several updates in a row —
+    // switching changes the waveform phase, which would fake or drop beats.
+    const current = candidates.find((c) => c.method === this.method)!;
+    let challenger = current;
+    for (const c of candidates) if (c.snr > challenger.snr) challenger = c;
+    if (challenger.method !== this.method && challenger.snr > current.snr * 1.4) {
+      if (this.pendingMethod === challenger.method) this.pendingCount++; else { this.pendingMethod = challenger.method; this.pendingCount = 1; }
+      if (this.pendingCount >= 3) { this.method = challenger.method; this.pendingCount = 0; this.pendingMethod = null; }
+    } else { this.pendingMethod = null; this.pendingCount = 0; }
+    const best = candidates.find((c) => c.method === this.method)!;
+    const filtered = best.filtered;
+    const { freq, snr } = best;
 
     // Waveform for display: last `display` seconds, normalised to unit RMS.
     const dispN = Math.min(n, Math.round(this.display * this.fs));
