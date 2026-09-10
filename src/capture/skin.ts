@@ -42,6 +42,7 @@ export class SkinSampler {
       this.frame = document.createElement('canvas');
       this.frame.width = 64; this.frame.height = 48;
       this.frameCtx = this.frame.getContext('2d', { willReadFrequently: true });
+      this.frameCtx!.imageSmoothingQuality = 'high';
     }
     try { this.frameCtx!.drawImage(video, 0, 0, 64, 48); } catch { return null; }
     this.lastFrameData = this.frameCtx!.getImageData(0, 0, 64, 48).data;
