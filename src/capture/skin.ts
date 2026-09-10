@@ -75,7 +75,14 @@ export class SkinSampler {
         blocks[by * BX + bx] = sum / (CW * CH);
       }
     }
-    return first ? 0 : sum / n;
+    if (!this.prevBlocks) { this.prevBlocks = blocks; return 0; }
+    let diff = 0;
+    for (let i = 0; i < blocks.length; i++) diff += Math.abs(blocks[i] - this.prevBlocks[i]);
+    this.prevBlocks = blocks;
+    const raw = diff / blocks.length;
+    // Adaptive floor: whatever residual flicker/noise a camera has when nothing moves.
+    this.motionFloor = Math.min(raw, this.motionFloor * 1.01 + 0.003);
+    return Math.max(0, raw - this.motionFloor);
   }
 
   /**
