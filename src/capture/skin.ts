@@ -30,7 +30,8 @@ export class SkinSampler {
 
   private frame: HTMLCanvasElement | null = null;
   private frameCtx: CanvasRenderingContext2D | null = null;
-  private prevLuma: Float32Array | null = null;
+  private prevBlocks: Float32Array | null = null;
+  private motionFloor = 0;
   private lastFrameData: Uint8ClampedArray | null = null;
 
   /** Draw the frame at 64x48 once per call; shared by motion() and locate(). */
