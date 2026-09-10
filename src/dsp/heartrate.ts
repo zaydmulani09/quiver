@@ -157,7 +157,7 @@ export class HeartRateEstimator {
     // Calibrated on synthetic traces: noise-only peaks score SNR 0.5–1.2, real pulses 3–1000.
     const snrConf = Math.max(0, Math.min(1, (snr - 0.9) / 1.4));
     const timeConf = Math.max(0, Math.min(1, (seconds - 3) / 5));
-    const confidence = snrConf * timeConf;
+    const confidence = snrConf * (0.35 + 0.65 * stability) * timeConf;
 
     // Smoothing with persistence: accept a big jump only if it holds for ~1.5 s.
     const now = this.t[this.t.length - 1];
