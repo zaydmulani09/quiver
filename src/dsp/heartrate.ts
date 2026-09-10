@@ -54,6 +54,10 @@ export class HeartRateEstimator {
   private candidateSince = 0;
   private lastBeatTime = -Infinity;
   private conf = 0;
+  private method: 'pos' | 'chrom' | 'green' = 'pos';
+  private pendingMethod: 'pos' | 'chrom' | 'green' | null = null;
+  private pendingCount = 0;
+  private peakHistory: number[] = [];
 
   constructor(opts: HeartRateOptions = {}) {
     this.fs = opts.fs ?? 30;
