@@ -120,6 +120,8 @@ export function dominantFrequency(power: ArrayLike<number>, fs: number, nfft: nu
   const denom = a - 2 * b + c;
   const delta = denom !== 0 ? (0.5 * (a - c)) / denom : 0;
   const freq = (best + Math.max(-0.5, Math.min(0.5, delta))) * binHz;
+  // Signal = main lobe at the peak plus the lobe at its 2nd harmonic (a pulse is not a sine);
+  // noise = everything else in band. This is the usual rPPG SNR definition (de Haan 2013).
   let peakBand = 0;
   for (let i = Math.max(iLo, best - peakHalfWidth); i <= Math.min(iHi, best + peakHalfWidth); i++) peakBand += power[i];
   const rest = Math.max(total - peakBand, 1e-12);
