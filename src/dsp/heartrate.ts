@@ -71,7 +71,7 @@ export class HeartRateEstimator {
   reset(): void {
     this.t = []; this.r = []; this.g = []; this.b = [];
     this.smoothed = null; this.candidate = null; this.candidateSince = 0;
-    this.lastBeatTime = -Infinity; this.conf = 0;
+    this.lastBeatTime = -Infinity; this.conf = 0; this.method = 'pos'; this.pendingMethod = null; this.pendingCount = 0; this.peakHistory = [];
   }
 
   get seconds(): number {
