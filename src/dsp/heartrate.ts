@@ -198,6 +198,6 @@ export class HeartRateEstimator {
       }
     }
 
-    return { bpm: this.conf > 0.3 ? this.smoothed : null, rawBpm, confidence: this.conf, seconds, waveform, beat };
+    return { bpm: this.conf > 0.3 ? this.smoothed : null, rawBpm, confidence: this.conf, seconds, waveform, beat, method: this.method, snr };
   }
 }
