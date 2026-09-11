@@ -511,7 +511,7 @@ function processFrame(mediaTime: number): void {
       magnifier.mask = { cx: roi.cx, cy: 1 - roi.cy, rx: roi.rx * 1.45, ry: roi.ry * 1.35 };
     }
     const s = sampler.sample(video, roi);
-    if (s && motionLevel < 4) {
+    if (s && motionLevel < 6) {
       coverage += (s.coverage - coverage) * 0.2;
       // The skin box misses some complexions and lighting; fall back to the whole oval, and let the
       // spectral SNR gate decide whether there is a pulse in it.
