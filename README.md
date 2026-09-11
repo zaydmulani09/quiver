@@ -80,6 +80,10 @@ tests/dsp.test.ts      vitest
 
 Zero runtime dependencies. ~16 KB of JavaScript gzipped.
 
+## Contributing
+
+Issues and pull requests are welcome — especially reports from cameras, lighting and skin tones where the lock is slow or wrong (include the HUD line: `fps · size · method snrN`). `npm test` must stay green; the DSP is deliberately dependency-free and testable in Node, so new estimator ideas should come with a synthetic-trace test.
+
 ## Honest limits
 
 - Remote PPG from a consumer webcam is typically within a few bpm of a chest strap in good, even light, and much worse in dim light, with head motion, with heavy makeup, or on very dark skin (less light gets back out). It is a toy that happens to be real science. Not a medical device.
