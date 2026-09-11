@@ -84,6 +84,20 @@ Zero runtime dependencies. ~16 KB of JavaScript gzipped.
 - Motion modes amplify *any* motion in band, including camera shake. Put the phone down.
 - At 30 fps anything above ~14 Hz aliases; fast vibration still shows, just not at its true frequency.
 
+## Credits
+
+**Made by [Zayd Mulani](https://github.com/zaydmulani09)** (@zaydmulani09) — building local-first AI tooling and dev infrastructure, shipping in public from New Jersey. Pair-programmed with Claude Code (Opus 5); every commit carries the co-author trailer.
+
+quiver is an independent, from-scratch reimplementation of the published methods below, written in TypeScript/WebGL2 with zero runtime dependencies. None of MIT's reference code or sample footage is used (their release is licensed for non-commercial research only and the method is patented by MIT). quiver is free, non-commercial and educational.
+
+Type: [Instrument Serif](https://github.com/Instrument/instrument-serif) by Rodrigo Fuenzalida & Instrument, and [Geist / Geist Mono](https://vercel.com/font) by Vercel — both SIL Open Font License. Deployed on Vercel.
+
+### How to cite quiver
+
+There is a [`CITATION.cff`](CITATION.cff) in the repo (GitHub renders a "Cite this repository" button from it). Plain text:
+
+> Mulani, Z. (2026). *quiver: real-time Eulerian video magnification and remote photoplethysmography in the browser* (v1.0.0) [Software]. https://quivercam.vercel.app
+
 ## References
 
 - Wu, Rubinstein, Shih, Guttag, Durand, Freeman. *Eulerian Video Magnification for Revealing Subtle Changes in the World.* SIGGRAPH 2012. https://people.csail.mit.edu/mrub/evm/
