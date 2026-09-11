@@ -634,7 +634,7 @@ function updateVitals(): void {
     const secs = Math.max(0, 8 - r.seconds);
     statusEl.textContent = usingFallbackRoi && r.seconds >= 4
       ? 'No skin found in the oval. Move your face into it, add light, or move closer.'
-      : r.seconds < 8 ? `Reading… ${secs.toFixed(0)}s. Hold still, face the light.` : 'Weak signal. Move closer, add light, hold still.';
+      : r.seconds < 8 ? `Reading… ${secs.toFixed(0)}s. Hold still, face the light.` : 'Still searching. Face a window or lamp, fill the oval, and keep still.';
   }
 }
 
