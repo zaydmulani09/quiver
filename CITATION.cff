@@ -32,3 +32,37 @@ references:
         given-names: John
       - family-names: Durand
         given-names: Frédo
+      - family-names: Freeman
+        given-names: William T.
+    journal: "ACM Transactions on Graphics"
+    volume: 31
+    issue: 4
+    year: 2012
+    doi: 10.1145/2185520.2185561
+  - type: article
+    title: "Algorithmic Principles of Remote PPG"
+    authors:
+      - family-names: Wang
+        given-names: Wenjin
+      - family-names: den Brinker
+        given-names: Albertus C.
+      - family-names: Stuijk
+        given-names: Sander
+      - family-names: de Haan
+        given-names: Gerard
+    journal: "IEEE Transactions on Biomedical Engineering"
+    volume: 64
+    issue: 7
+    start: 1479
+    end: 1491
+    year: 2017
+    doi: 10.1109/TBME.2016.2609282
+  - type: article
+    title: "Robust Pulse Rate From Chrominance-Based rPPG"
+    authors:
+      - family-names: de Haan
+        given-names: Gerard
+      - family-names: Jeanne
+        given-names: Vincent
+    journal: "IEEE Transactions on Biomedical Engineering"
+    volume: 60
