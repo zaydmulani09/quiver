@@ -32,6 +32,26 @@
     <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/src/styles.css" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "quiver",
+      "url": "https://quivercam.vercel.app/",
+      "description": "A motion microscope in your browser: real-time Eulerian video magnification and remote photoplethysmography. Watch blood pulse through your face; measure your heart rate from your webcam. On-device, nothing uploaded.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any (web browser with WebGL2)",
+      "browserRequirements": "WebGL2, camera",
+      "isAccessibleForFree": true,
+      "license": "https://opensource.org/licenses/MIT",
+      "author": { "@type": "Person", "name": "Zayd Mulani", "url": "https://github.com/zaydmulani09" },
+      "isBasedOn": [
+        { "@type": "ScholarlyArticle", "name": "Eulerian Video Magnification for Revealing Subtle Changes in the World", "author": "Hao-Yu Wu, Michael Rubinstein, Eugene Shih, John Guttag, Frédo Durand, William T. Freeman", "datePublished": "2012", "isPartOf": "ACM Transactions on Graphics 31(4)", "sameAs": "https://doi.org/10.1145/2185520.2185561" },
+        { "@type": "ScholarlyArticle", "name": "Algorithmic Principles of Remote PPG", "author": "Wenjin Wang, Albertus C. den Brinker, Sander Stuijk, Gerard de Haan", "datePublished": "2017", "isPartOf": "IEEE Transactions on Biomedical Engineering 64(7)", "sameAs": "https://doi.org/10.1109/TBME.2016.2609282" },
+        { "@type": "ScholarlyArticle", "name": "Robust Pulse Rate From Chrominance-Based rPPG", "author": "Gerard de Haan, Vincent Jeanne", "datePublished": "2013", "isPartOf": "IEEE Transactions on Biomedical Engineering 60(10)", "sameAs": "https://doi.org/10.1109/TBME.2013.2266196" }
+      ]
+    }
+    </script>
   </head>
   <body>
     <a class="skip" href="#stage">Skip to the microscope</a>
