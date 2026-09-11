@@ -66,3 +66,22 @@ references:
         given-names: Vincent
     journal: "IEEE Transactions on Biomedical Engineering"
     volume: 60
+    issue: 10
+    start: 2878
+    end: 2886
+    year: 2013
+    doi: 10.1109/TBME.2013.2266196
+  - type: article
+    title: "Face segmentation using skin-color map in videophone applications"
+    authors:
+      - family-names: Chai
+        given-names: Douglas
+      - family-names: Ngan
+        given-names: King N.
+    journal: "IEEE Transactions on Circuits and Systems for Video Technology"
+    volume: 9
+    issue: 4
+    start: 551
+    end: 564
+    year: 1999
+    doi: 10.1109/76.767122
