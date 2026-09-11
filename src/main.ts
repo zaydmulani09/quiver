@@ -488,9 +488,10 @@ function processFrame(mediaTime: number): void {
   // as the picture changes and ease it back in over ~1.5 s of stillness.
   const raw = sampler.motion(video);
   motionLevel = raw > motionLevel ? raw : motionLevel + (raw - motionLevel) * 0.06;
-  const still = Math.max(0, Math.min(1, 1 - (motionLevel - 1.0) / 2.5));
-  magnifier.gainScale += (still * still - magnifier.gainScale) * 0.25;
-  hudHint.classList.toggle('warn', motionLevel > 2.2);
+  // The metric is block-averaged and floor-subtracted, so ~0 when still even on a noisy camera.
+  const still = Math.max(0, Math.min(1, 1 - (motionLevel - 0.4) / 1.6));
+  magnifier.gainScale += (0.2 + 0.8 * still * still - magnifier.gainScale) * 0.25;
+  hudHint.classList.toggle('warn', motionLevel > 1.2);
 
   magnifier.process(video, dt);
 
