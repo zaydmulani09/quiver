@@ -105,4 +105,5 @@ There is a [`CITATION.cff`](CITATION.cff) in the repo (GitHub renders a "Cite th
 3. G. de Haan, V. Jeanne. **Robust Pulse Rate From Chrominance-Based rPPG.** *IEEE Transactions on Biomedical Engineering* 60(10):2878–2886, 2013. [doi:10.1109/TBME.2013.2266196](https://doi.org/10.1109/TBME.2013.2266196)
 4. D. Chai, K. N. Ngan. **Face segmentation using skin-color map in videophone applications.** *IEEE Transactions on Circuits and Systems for Video Technology* 9(4):551–564, 1999. [doi:10.1109/76.767122](https://doi.org/10.1109/76.767122)
 
-MIT licence.
+<details>
+<summary>BibTeX</summary>
