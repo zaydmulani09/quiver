@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use quiver in your work, please cite it — and cite the papers it reimplements (see references)."
+type: software
+title: "quiver: real-time Eulerian video magnification and remote photoplethysmography in the browser"
+abstract: "A motion microscope that runs in the browser. Amplifies invisible colour and motion changes in live video (blood flow in the face, breathing, vibration) with a WebGL2 reimplementation of Eulerian Video Magnification, and measures heart rate from skin colour with POS/CHROM remote PPG. On-device, no server."
+authors:
+  - family-names: Mulani
+    given-names: Zayd
+    alias: zaydmulani09
+url: "https://quivercam.vercel.app"
+repository-code: "https://github.com/zaydmulani09/quiver"
+license: MIT
+version: 1.0.0
+date-released: "2026-09-11"
+keywords:
+  - eulerian video magnification
+  - remote photoplethysmography
+  - rPPG
+  - WebGL2
+  - heart rate
+references:
+  - type: article
+    title: "Eulerian Video Magnification for Revealing Subtle Changes in the World"
+    authors:
+      - family-names: Wu
+        given-names: Hao-Yu
+      - family-names: Rubinstein
+        given-names: Michael
+      - family-names: Shih
+        given-names: Eugene
+      - family-names: Guttag
+        given-names: John
+      - family-names: Durand
+        given-names: Frédo
