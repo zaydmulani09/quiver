@@ -141,3 +141,5 @@ There is a [`CITATION.cff`](CITATION.cff) in the repo (GitHub renders a "Cite th
 </details>
 
 ## Licence
+
+[MIT](LICENSE) © 2026 Zayd Mulani
