@@ -560,7 +560,7 @@ function tick(now: number): void {
       lastUpdate = now;
       updateVitals();
       const { w, h } = magnifier?.processingSize ?? { w: 0, h: 0 };
-      hudFps.textContent = fps > 0 ? `${fps.toFixed(0)} fps · ${w}×${h}` : '';
+      hudFps.textContent = fps > 0 ? `${fps.toFixed(0)} fps · ${w}×${h}${mode === 'pulse' && lastReading ? ` · ${lastReading.method} snr${(lastReading.confidence * 10).toFixed(0)}` : ''}` : '';
       if (recorder.recording) recTime.textContent = `${recorder.elapsed.toFixed(1)}s`;
     }
   }
