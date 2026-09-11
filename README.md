@@ -92,7 +92,7 @@ Issues and pull requests are welcome — especially reports from cameras, lighti
 
 ## Credits
 
-**Made by [Zayd Mulani](https://github.com/zaydmulani09)** (@zaydmulani09) — building local-first AI tooling and dev infrastructure, shipping in public from New Jersey. Pair-programmed with Claude Code (Opus 5); every commit carries the co-author trailer.
+**Made by [Zayd Mulani](https://github.com/zaydmulani09)** (@zaydmulani09) — building local-first AI tooling and dev infrastructure, shipping in public from New Jersey.
 
 quiver is an independent, from-scratch reimplementation of the published methods below, written in TypeScript/WebGL2 with zero runtime dependencies. None of MIT's reference code or sample footage is used (their release is licensed for non-commercial research only and the method is patented by MIT). quiver is free, non-commercial and educational.
 
