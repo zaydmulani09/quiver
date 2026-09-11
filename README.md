@@ -107,3 +107,37 @@ There is a [`CITATION.cff`](CITATION.cff) in the repo (GitHub renders a "Cite th
 
 <details>
 <summary>BibTeX</summary>
+
+```bibtex
+@article{wu2012evm,
+  title   = {Eulerian Video Magnification for Revealing Subtle Changes in the World},
+  author  = {Wu, Hao-Yu and Rubinstein, Michael and Shih, Eugene and Guttag, John and Durand, Fr{\'e}do and Freeman, William T.},
+  journal = {ACM Transactions on Graphics (Proc. SIGGRAPH)},
+  volume  = {31}, number = {4}, year = {2012},
+  doi     = {10.1145/2185520.2185561}
+}
+@article{wang2017pos,
+  title   = {Algorithmic Principles of Remote PPG},
+  author  = {Wang, Wenjin and den Brinker, Albertus C. and Stuijk, Sander and de Haan, Gerard},
+  journal = {IEEE Transactions on Biomedical Engineering},
+  volume  = {64}, number = {7}, pages = {1479--1491}, year = {2017},
+  doi     = {10.1109/TBME.2016.2609282}
+}
+@article{dehaan2013chrom,
+  title   = {Robust Pulse Rate From Chrominance-Based rPPG},
+  author  = {de Haan, Gerard and Jeanne, Vincent},
+  journal = {IEEE Transactions on Biomedical Engineering},
+  volume  = {60}, number = {10}, pages = {2878--2886}, year = {2013},
+  doi     = {10.1109/TBME.2013.2266196}
+}
+@article{chai1999skin,
+  title   = {Face segmentation using skin-color map in videophone applications},
+  author  = {Chai, Douglas and Ngan, King N.},
+  journal = {IEEE Transactions on Circuits and Systems for Video Technology},
+  volume  = {9}, number = {4}, pages = {551--564}, year = {1999},
+  doi     = {10.1109/76.767122}
+}
+```
+</details>
+
+## Licence
