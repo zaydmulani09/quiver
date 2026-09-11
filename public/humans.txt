@@ -1,0 +1,28 @@
+/* TEAM */
+Creator: Zayd Mulani
+GitHub: https://github.com/zaydmulani09
+Location: New Jersey, USA
+
+/* THANKS */
+Hao-Yu Wu, Michael Rubinstein, Eugene Shih, John Guttag, Frédo Durand, William T. Freeman (MIT CSAIL)
+  Eulerian Video Magnification for Revealing Subtle Changes in the World, ACM TOG 31(4), SIGGRAPH 2012
+  https://doi.org/10.1145/2185520.2185561
+Wenjin Wang, Albertus C. den Brinker, Sander Stuijk, Gerard de Haan
+  Algorithmic Principles of Remote PPG (POS), IEEE TBME 64(7), 2017
+  https://doi.org/10.1109/TBME.2016.2609282
+Gerard de Haan, Vincent Jeanne
+  Robust Pulse Rate From Chrominance-Based rPPG (CHROM), IEEE TBME 60(10), 2013
+  https://doi.org/10.1109/TBME.2013.2266196
+Douglas Chai, King N. Ngan
+  Face segmentation using skin-color map in videophone applications, IEEE TCSVT 9(4), 1999
+  https://doi.org/10.1109/76.767122
+Rodrigo Fuenzalida & Instrument — Instrument Serif (SIL OFL)
+Vercel — Geist & Geist Mono (SIL OFL)
+
+/* SITE */
+Last update: 2026/09/11
+Language: English
+Standards: HTML5, CSS, TypeScript, WebGL2, Web Audio, MediaRecorder, requestVideoFrameCallback
+Components: none — zero runtime dependencies
+Software: Vite, Vitest, Claude Code
+Licence: MIT
