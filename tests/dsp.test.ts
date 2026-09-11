@@ -109,6 +109,32 @@ describe('POS + HeartRateEstimator', () => {
     expect(last.waveform.length).toBeGreaterThan(100);
   });
 
+  it('locks on a dim, noisy, slightly restless trace (webcam-like)', () => {
+    // 3x the sensor noise of the clean case, half the pulse amplitude, breathing intensity
+    // modulation and a slow head sway — closer to a real laptop camera in a bedroom.
+    const fs = 30, bpm = 66;
+    const n = 14 * fs;
+    const est = new HeartRateEstimator({ fs });
+    let seed = 11;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296 - 0.5; };
+    let last = est.update();
+    for (let i = 0; i < n; i++) {
+      const t = i / fs;
+      const pulse = Math.sin(2 * Math.PI * (bpm / 60) * t) + 0.3 * Math.sin(4 * Math.PI * (bpm / 60) * t);
+      const breathe = 1 + 0.01 * Math.sin(2 * Math.PI * 0.25 * t);
+      const sway = 3 * Math.sin(2 * Math.PI * 0.12 * t);
+      est.push(t + rnd() * 0.006,
+        (150 + sway + pulse * 0.18) * breathe + rnd() * 3,
+        (105 + sway + pulse * 0.30) * breathe + rnd() * 3,
+        (88 + sway + pulse * 0.10) * breathe + rnd() * 3);
+      if (i % 5 === 0) last = est.update();
+    }
+    last = est.update();
+    expect(last.bpm).not.toBeNull();
+    expect(Math.abs((last.bpm as number) - bpm)).toBeLessThan(5);
+    expect(last.confidence).toBeGreaterThan(0.3);
+  });
+
   it('stays unlocked on pure noise', () => {
     const est = new HeartRateEstimator();
     let seed = 3;
