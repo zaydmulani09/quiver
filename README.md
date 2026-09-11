@@ -1,5 +1,7 @@
 # quiver
 
+[![Live](https://img.shields.io/badge/live-quivercam.vercel.app-ff4d4d)](https://quivercam.vercel.app) [![Licence: MIT](https://img.shields.io/badge/licence-MIT-white)](LICENSE) [![Zero dependencies](https://img.shields.io/badge/runtime%20deps-0-black)](package.json)
+
 **Your webcam can see your heartbeat.**
 
 quiver is a motion microscope that runs in the browser. It amplifies the invisible colour and motion changes in live video — blood pulsing through your face, a chest breathing across the room, a table trembling under a laptop fan — ×60 in real time, and measures your heart rate from your face without touching you.
