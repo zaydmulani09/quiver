@@ -108,6 +108,7 @@ kbd {
 .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 8px #3ddc84aa; }
 .link { color: var(--muted); text-decoration: none; font-size: 14px; }
 .link:hover { color: var(--text); }
+.link.gh { display: inline-flex; align-items: center; }
 
 /* ---------- layout ---------- */
 .app {
