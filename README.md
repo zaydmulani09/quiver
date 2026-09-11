@@ -100,8 +100,9 @@ There is a [`CITATION.cff`](CITATION.cff) in the repo (GitHub renders a "Cite th
 
 ## References
 
-- Wu, Rubinstein, Shih, Guttag, Durand, Freeman. *Eulerian Video Magnification for Revealing Subtle Changes in the World.* SIGGRAPH 2012. https://people.csail.mit.edu/mrub/evm/
-- Wang, den Brinker, Stuijk, de Haan. *Algorithmic Principles of Remote PPG.* IEEE TBME 2017.
-- Chai, Ngan. *Face segmentation using skin-color map in videophone applications.* 1999 (the YCbCr skin box).
+1. H.-Y. Wu, M. Rubinstein, E. Shih, J. Guttag, F. Durand, W. T. Freeman. **Eulerian Video Magnification for Revealing Subtle Changes in the World.** *ACM Transactions on Graphics* 31(4), SIGGRAPH 2012. [doi:10.1145/2185520.2185561](https://doi.org/10.1145/2185520.2185561) · [project page](https://people.csail.mit.edu/mrub/evm/)
+2. W. Wang, A. C. den Brinker, S. Stuijk, G. de Haan. **Algorithmic Principles of Remote PPG.** *IEEE Transactions on Biomedical Engineering* 64(7):1479–1491, 2017. [doi:10.1109/TBME.2016.2609282](https://doi.org/10.1109/TBME.2016.2609282)
+3. G. de Haan, V. Jeanne. **Robust Pulse Rate From Chrominance-Based rPPG.** *IEEE Transactions on Biomedical Engineering* 60(10):2878–2886, 2013. [doi:10.1109/TBME.2013.2266196](https://doi.org/10.1109/TBME.2013.2266196)
+4. D. Chai, K. N. Ngan. **Face segmentation using skin-color map in videophone applications.** *IEEE Transactions on Circuits and Systems for Video Technology* 9(4):551–564, 1999. [doi:10.1109/76.767122](https://doi.org/10.1109/76.767122)
 
 MIT licence.
