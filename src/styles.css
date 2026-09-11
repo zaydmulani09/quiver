@@ -337,8 +337,23 @@ input[type='range']::-moz-range-thumb { width: 15px; height: 15px; border-radius
 .how-refs { color: var(--muted); font-size: 13px; }
 .how-refs a { color: #c9c9cf; }
 
-.foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; max-width: 1400px; margin: 0 auto; padding: 18px 24px 32px; color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--line); }
-.foot > span:first-child { font-family: var(--serif); font-size: 18px; color: var(--text); }
+.foot { display: flex; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; max-width: 1400px; margin: 0 auto; padding: 18px 24px 32px; color: var(--muted); font-size: 12.5px; border-top: 1px solid var(--line); }
+.foot-left, .foot-right { display: flex; flex-direction: column; gap: 6px; }
+.foot-right { text-align: right; align-items: flex-end; }
+.foot-brand { font-family: var(--serif); font-size: 18px; color: var(--text); }
+.foot a { color: #c9c9cf; text-decoration: none; border-bottom: 1px solid var(--line-strong); }
+.foot a:hover { color: var(--text); border-bottom-color: var(--accent); }
+.foot-credit { max-width: 60ch; }
+.credits { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 32px; margin: 8px 0 36px; padding-top: 32px; border-top: 1px solid var(--line); }
+.credits h3 { font-family: var(--serif); font-weight: 400; font-size: 24px; margin: 0 0 10px; letter-spacing: -0.01em; }
+.credits p { margin: 0 0 10px; color: #b9b9c0; font-size: 14px; }
+.credits a { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--line-strong); }
+.credits a:hover { border-bottom-color: var(--accent); }
+.refs { margin: 0; padding-left: 20px; color: #b9b9c0; font-size: 13.5px; display: flex; flex-direction: column; gap: 8px; }
+.refs li::marker { color: var(--accent); font-family: var(--mono); font-size: 12px; }
+.refs em { font-family: var(--serif); font-style: italic; font-size: 1.1em; color: var(--text); }
+.refs a { font-family: var(--mono); font-size: 12px; }
+@media (max-width: 800px) { .credits { grid-template-columns: 1fr; } .foot-right { text-align: left; align-items: flex-start; } }
 
 /* ---------- responsive ---------- */
 @media (max-width: 1000px) {
